@@ -902,7 +902,7 @@ void DatasetAnnotator::loadScenario(char* weather)
 
 	while (fscanf(p, "%u\n", &current_hash)==1) {
 		this->peds_hash.push_back(current_hash);
-		debug_file << current_hash << "\n";
+		//debug_file << current_hash << "\n";
 	}
 
 	//while (p >> current_hash)
@@ -913,7 +913,7 @@ void DatasetAnnotator::loadScenario(char* weather)
 
 	//p.close();
 	fclose(p);
-	debug_file << "closing ped file \n";
+	//debug_file << "closing ped file \n";
 
 	// task was read in script.c++
 	//fscanf(this->file, "%s\n", weather_type);
@@ -926,7 +926,7 @@ void DatasetAnnotator::loadScenario(char* weather)
 	GAMEPLAY::SET_OVERRIDE_WEATHER(weather);
 	GAMEPLAY::SET_WEATHER_TYPE_NOW(weather);
 
-	debug_file << "read task and weather \n";
+	//debug_file << "read task and weather \n";
 
 	fscanf_s(this->file, "%d[\n]?", &secondCam);
 	if (secondCam)
@@ -934,7 +934,7 @@ void DatasetAnnotator::loadScenario(char* weather)
 	//else
 	//	// read new line character
 	//	fscanf_s(f, "\n");
-	debug_file << "read second camera \n";
+	//debug_file << "read second camera \n";
 
 	fscanf_s(this->file, "%d", &moving);
 	if (moving == 0) 
@@ -945,7 +945,7 @@ void DatasetAnnotator::loadScenario(char* weather)
 	fscanf_s(this->file, "%f %f %f %f %f %f\n", &vTP1.x, &vTP1.y, &vTP1.z, &vTP1_rot.x, &vTP1_rot.y, &vTP1_rot.z);
 	fscanf_s(this->file, "%f %f %f %f %f %f\n", &vTP2.x, &vTP2.y, &vTP2.z, &vTP2_rot.x, &vTP2_rot.y, &vTP2_rot.z);
 
-	debug_file << "read other stuff \n";
+	//debug_file << "read other stuff \n";
 
 	Entity e = PLAYER::PLAYER_PED_ID();
 
@@ -1021,11 +1021,47 @@ void DatasetAnnotator::spawn_peds_flow(Vector3 pos, Vector3 goFrom, Vector3 goTo
 
 	float rnX, rnY;
 
+	// count local number of peds
+	int tot_peds = 0;
+	Hash model;
+
 	if (currentBehaviour == 8) {
-		for (int i = 0; i < npeds; i++) {
-			ped[i] = PED::CREATE_RANDOM_PED(goFrom.x, goFrom.y, goFrom.z);
-			WAIT(100);
+		if (strcmp(this->task, "reID") == 0) {
+			for (int i = 0; i < npeds; i++) {
+				if (this->ped_counter < this->peds_hash.size()) {
+					model = peds_hash[ped_counter];
+					STREAMING::REQUEST_MODEL(model);
+					WAIT(350);
+
+					ped[i] = PED::CREATE_PED(26, model, goFrom.x, goFrom.y, goFrom.z, 0.0, FALSE, TRUE);
+					WAIT(50);
+
+					for (int componentID = 0; componentID <= 11; componentID++) {
+						PED::SET_PED_COMPONENT_VARIATION(ped[componentID], componentID, 0, 0, 0);
+					}
+
+					WAIT(50);
+
+					this->ped_counter++;
+					tot_peds++;
+					//debug_file << "creating peds" << "tot_peds" << "\n";
+				}
+				//else
+				//	// if the number of peds is not sufficient, break
+				//	break;
+			}
+			//debug_file << "spawn_peds_flow " << n_peds << "\n";
+			//// if the loop was interrupted, change the number of n_peds
+			//n_peds = (tot_peds < npeds) ? tot_peds : n_peds;
+			//debug_file << "spawn_peds_flow " << n_peds << "\n";
 		}
+		else {
+			for (int i = 0; i < npeds; i++) {
+				ped[i] = PED::CREATE_RANDOM_PED(goFrom.x, goFrom.y, goFrom.z);
+				WAIT(100);
+			}
+		}
+
 		if (DEMO)
 			WAIT(500);
 		else
@@ -1051,38 +1087,69 @@ void DatasetAnnotator::spawn_peds_flow(Vector3 pos, Vector3 goFrom, Vector3 goTo
 			WAIT(500);
 		else
 			WAIT(2000);
-		for (int i = 0; i < npeds; i++) {
-			ped_specular[i] = PED::CREATE_RANDOM_PED(goTo.x, goTo.y, goTo.z);
-			WAIT(100);
-		}
-		if (DEMO)
-			WAIT(500);
-		else
-			WAIT(2000);
-		for (int i = 0; i<npeds; i++) {
-			ENTITY::SET_ENTITY_HEALTH(ped_specular[i], 0);
-			WAIT(50);
-		}
-		if (DEMO)
-			WAIT(500);
-		else
-			WAIT(2000);
-		for (int i = 0; i<npeds; i++) {
-			AI::CLEAR_PED_TASKS_IMMEDIATELY(ped_specular[i]);
-			PED::RESURRECT_PED(ped_specular[i]);
-			PED::REVIVE_INJURED_PED(ped_specular[i]);
-			ENTITY::SET_ENTITY_COLLISION(ped_specular[i], TRUE, TRUE);
-			PED::SET_PED_CAN_RAGDOLL(ped_specular[i], TRUE);
-			PED::SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped_specular[i], TRUE);
-			PED::SET_PED_COMBAT_ATTRIBUTES(ped_specular[i], 1, FALSE);
-		}
 
-		
+		if (strcmp(this->task, "reID") != 0) {
+			for (int i = 0; i < npeds; i++) {
+				ped_specular[i] = PED::CREATE_RANDOM_PED(goTo.x, goTo.y, goTo.z);
+				WAIT(100);
+			}
+			if (DEMO)
+				WAIT(500);
+			else
+				WAIT(2000);
+			for (int i = 0; i < npeds; i++) {
+				ENTITY::SET_ENTITY_HEALTH(ped_specular[i], 0);
+				WAIT(50);
+			}
+			if (DEMO)
+				WAIT(500);
+			else
+				WAIT(2000);
+			for (int i = 0; i < npeds; i++) {
+				AI::CLEAR_PED_TASKS_IMMEDIATELY(ped_specular[i]);
+				PED::RESURRECT_PED(ped_specular[i]);
+				PED::REVIVE_INJURED_PED(ped_specular[i]);
+				ENTITY::SET_ENTITY_COLLISION(ped_specular[i], TRUE, TRUE);
+				PED::SET_PED_CAN_RAGDOLL(ped_specular[i], TRUE);
+				PED::SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped_specular[i], TRUE);
+				PED::SET_PED_COMBAT_ATTRIBUTES(ped_specular[i], 1, FALSE);
+			}
+		}
 	}
+
 	else if (currentBehaviour == 0) {
-		for (int i = 0; i<npeds; i++) {
-			ped[i] = PED::CREATE_RANDOM_PED(pos.x, pos.y, pos.z);
-			WAIT(50);
+
+		if (strcmp(this->task, "reID") == 0) {
+			for (int i = 0; i < npeds; i++) {
+				if (this->ped_counter < this->peds_hash.size()) {
+					model = peds_hash[ped_counter];
+					STREAMING::REQUEST_MODEL(model);
+					WAIT(350);
+
+					ped[i] = PED::CREATE_PED(26, model, goFrom.x, goFrom.y, goFrom.z, 0.0, FALSE, TRUE);
+					WAIT(50);
+
+					for (int componentID = 0; componentID <= 11; componentID++) {
+						PED::SET_PED_COMPONENT_VARIATION(ped[componentID], componentID, 0, 0, 0);
+					}
+
+					WAIT(50);
+
+					this->ped_counter++;
+					tot_peds++;
+				}
+				//else
+				//	// if the number of peds is not sufficient, break
+				//	break;
+			}
+			//// if the loop was interrupted, change the number of n_peds
+			//n_peds = (tot_peds < npeds) ? tot_peds : n_peds;
+		}
+		else {
+			for (int i = 0; i < npeds; i++) {
+				ped[i] = PED::CREATE_RANDOM_PED(goFrom.x, goFrom.y, goFrom.z);
+				WAIT(50);
+			}
 		}
 		for (int i = 0; i < npeds; i++) {
 			ENTITY::SET_ENTITY_HEALTH(ped[i], 0);
@@ -1145,29 +1212,31 @@ void DatasetAnnotator::spawn_peds_flow(Vector3 pos, Vector3 goFrom, Vector3 goTo
 		AI::TASK_PERFORM_SEQUENCE(ped[i], seq);
 		AI::CLEAR_SEQUENCE_TASK(&seq);
 
-		if (spawning_radius != -1) {
-			rnX = (float)((rand() % (spawning_radius * 2)) - spawning_radius);
-			rnY = (float)((rand() % (spawning_radius * 2)) - spawning_radius);
-			speed_rnd = (float)(10 + rand() % 4) / 10;
+		if (strcmp(this->task, "reID") != 0) {
+			if (spawning_radius != -1) {
+				rnX = (float)((rand() % (spawning_radius * 2)) - spawning_radius);
+				rnY = (float)((rand() % (spawning_radius * 2)) - spawning_radius);
+				speed_rnd = (float)(10 + rand() % 4) / 10;
 
-			WAIT(50);
+				WAIT(50);
 
-			addwPed(ped_specular[i], coordsToVector(goTo.x + rnX, goTo.y + rnY, goTo.z), coordsToVector(goFrom.x + rnX, goFrom.y + rnY, goFrom.z), time_between_walks, speed_rnd);
+				addwPed(ped_specular[i], coordsToVector(goTo.x + rnX, goTo.y + rnY, goTo.z), coordsToVector(goFrom.x + rnX, goFrom.y + rnY, goFrom.z), time_between_walks, speed_rnd);
 
-			Object seq2;
-			AI::OPEN_SEQUENCE_TASK(&seq2);
-			AI::TASK_USE_MOBILE_PHONE_TIMED(0, rand() % max_time);
-			AI::TASK_GO_TO_COORD_ANY_MEANS(0, goTo.x + rnX, goTo.y + rnY, goTo.z, speed_rnd, 0, 0, 786603, 0xbf800000);
-			AI::TASK_GO_TO_COORD_ANY_MEANS(0, goFrom.x + rnX, goFrom.y + rnY, goFrom.z, speed_rnd, 0, 0, 786603, 0xbf800000);
-			AI::TASK_GO_TO_COORD_ANY_MEANS(0, goTo.x + rnX, goTo.y + rnY, goTo.z, speed_rnd, 0, 0, 786603, 0xbf800000);
-			AI::TASK_GO_TO_COORD_ANY_MEANS(0, goFrom.x + rnX, goFrom.y + rnY, goFrom.z, speed_rnd, 0, 0, 786603, 0xbf800000);
-			AI::TASK_GO_TO_COORD_ANY_MEANS(0, goTo.x + rnX, goTo.y + rnY, goTo.z, speed_rnd, 0, 0, 786603, 0xbf800000);
-			AI::TASK_GO_TO_COORD_ANY_MEANS(0, goFrom.x + rnX, goFrom.y + rnY, goFrom.z, speed_rnd, 0, 0, 786603, 0xbf800000);
-			AI::TASK_GO_TO_COORD_ANY_MEANS(0, goTo.x + rnX, goTo.y + rnY, goTo.z, speed_rnd, 0, 0, 786603, 0xbf800000);
-			AI::TASK_GO_TO_COORD_ANY_MEANS(0, goFrom.x + rnX, goFrom.y + rnY, goFrom.z, speed_rnd, 0, 0, 786603, 0xbf800000);
-			AI::CLOSE_SEQUENCE_TASK(seq2);
-			AI::TASK_PERFORM_SEQUENCE(ped_specular[i], seq2);
-			AI::CLEAR_SEQUENCE_TASK(&seq2);
+				Object seq2;
+				AI::OPEN_SEQUENCE_TASK(&seq2);
+				AI::TASK_USE_MOBILE_PHONE_TIMED(0, rand() % max_time);
+				AI::TASK_GO_TO_COORD_ANY_MEANS(0, goTo.x + rnX, goTo.y + rnY, goTo.z, speed_rnd, 0, 0, 786603, 0xbf800000);
+				AI::TASK_GO_TO_COORD_ANY_MEANS(0, goFrom.x + rnX, goFrom.y + rnY, goFrom.z, speed_rnd, 0, 0, 786603, 0xbf800000);
+				AI::TASK_GO_TO_COORD_ANY_MEANS(0, goTo.x + rnX, goTo.y + rnY, goTo.z, speed_rnd, 0, 0, 786603, 0xbf800000);
+				AI::TASK_GO_TO_COORD_ANY_MEANS(0, goFrom.x + rnX, goFrom.y + rnY, goFrom.z, speed_rnd, 0, 0, 786603, 0xbf800000);
+				AI::TASK_GO_TO_COORD_ANY_MEANS(0, goTo.x + rnX, goTo.y + rnY, goTo.z, speed_rnd, 0, 0, 786603, 0xbf800000);
+				AI::TASK_GO_TO_COORD_ANY_MEANS(0, goFrom.x + rnX, goFrom.y + rnY, goFrom.z, speed_rnd, 0, 0, 786603, 0xbf800000);
+				AI::TASK_GO_TO_COORD_ANY_MEANS(0, goTo.x + rnX, goTo.y + rnY, goTo.z, speed_rnd, 0, 0, 786603, 0xbf800000);
+				AI::TASK_GO_TO_COORD_ANY_MEANS(0, goFrom.x + rnX, goFrom.y + rnY, goFrom.z, speed_rnd, 0, 0, 786603, 0xbf800000);
+				AI::CLOSE_SEQUENCE_TASK(seq2);
+				AI::TASK_PERFORM_SEQUENCE(ped_specular[i], seq2);
+				AI::CLEAR_SEQUENCE_TASK(&seq2);
+			}
 		}
 	}
 }
@@ -1179,38 +1248,51 @@ void DatasetAnnotator::spawn_peds(Vector3 pos, Vector3 goFrom, Vector3 goTo, int
 	Vector3 current;
 	int i = 0;
 	
-	// count local number of peds
-	int tot_peds = 0;
-
 	int rn;
 	
+	// count local number of peds
+	int tot_peds = 0;
 	Hash model;
+
+	debug_file << "spawn_peds " << this->peds_hash.size() << "\n";
+	debug_file << "spawn_peds " << this->ped_counter << "\n";
+	debug_file << "spawn_peds " << this->task << " " << npeds << "\n";
 
 	if (strcmp(this->task, "reID")==0) {
 		for (int i = 0; i < npeds; i++) {
 			if (this->ped_counter < this->peds_hash.size()) {
 				model = peds_hash[ped_counter];
 				STREAMING::REQUEST_MODEL(model);
-				WAIT(300);
+				WAIT(350);
+
+				//debug_file << "model loaded\n";
 
 				ped[i] = PED::CREATE_PED(26, model, pos.x, pos.y, pos.z, 0.0, FALSE, TRUE);
 				WAIT(50);
 
+				//debug_file << "ped created\n";
+
 				for (int componentID = 0; componentID <= 11; componentID++) {
 					PED::SET_PED_COMPONENT_VARIATION(ped[componentID], componentID, 0, 0, 0);
 				}
-
 				WAIT(50);
 
-				ped_counter++;
+				//debug_file << "default clothes\n";
+
+				this->ped_counter++;
+				debug_file << "spawn_peds loop" << " " << this->peds_hash.size() << " " << this->ped_counter << "\n";
 				tot_peds++;
 			}
-			else
-				// if the number of peds is not sufficient, break
-				break;
+			//else
+			//	// if the number of peds is not sufficient, break
+			//	break;
 		}
-		// if the loop was interrupted, change the number of n_peds
-		n_peds = (tot_peds < npeds)? tot_peds : n_peds;
+		debug_file << "spawn_peds " << " " << this->peds_hash.size() << " " << this->ped_counter << "\n";
+
+		//debug_file << "spawn_peds " << n_peds << "\n";
+		//// if the loop was interrupted, change the number of n_peds
+		//n_peds = (tot_peds < npeds)? tot_peds : n_peds;
+		//debug_file << "spawn_peds " << n_peds << "\n";
 	}
 	else {
 		for (int i = 0; i < npeds; i++) {

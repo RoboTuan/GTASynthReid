@@ -962,8 +962,8 @@ void record(std::ofstream& strm) {
 			else
 				FPS = 30;
 
-			// 10 second video for debugging, put to 60 for final version
-			max_samples = FPS * 10 * 1 + 1;
+			// 1 second video for debugging, put to 60 for final version
+			max_samples = FPS * 1 * 1 + 1;
 			strm << FPS << task << max_samples << "\n";
 
 			// resetting pointer of the file

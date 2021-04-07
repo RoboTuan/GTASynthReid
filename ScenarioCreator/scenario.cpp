@@ -1743,46 +1743,42 @@ void ScenarioCreator::spawn_peds(Vector3 pos, int num_ped) {
 			AI::TASK_PERFORM_SEQUENCE(ped[i], seq);
 			AI::CLEAR_SEQUENCE_TASK(&seq);
 
-			if (paramsLines[5].param != -1) {
-				rnX = (float)((rand() % (paramsLines[5].param * 2)) - paramsLines[5].param);
-				rnY = (float)((rand() % (paramsLines[5].param * 2)) - paramsLines[5].param);
-				speed_rnd = (float)(10 + rand() % 4) / 10;
+			if (strcmp(task, "reID") != 0) {
+				if (paramsLines[5].param != -1) {
+					rnX = (float)((rand() % (paramsLines[5].param * 2)) - paramsLines[5].param);
+					rnY = (float)((rand() % (paramsLines[5].param * 2)) - paramsLines[5].param);
+					speed_rnd = (float)(10 + rand() % 4) / 10;
 
-				int ped_specular = PED::CREATE_RANDOM_PED(goTo.x, goTo.y, goTo.z);
+					int ped_specular = PED::CREATE_RANDOM_PED(goTo.x, goTo.y, goTo.z);
+					WAIT(100);
 
-				// code to set same variations for the peds
-				for (int i = 0; i <= 11; i++) {
-					PED::SET_PED_COMPONENT_VARIATION(ped_specular, i, 0, 0, 0);
+					ENTITY::SET_ENTITY_HEALTH(ped_specular, 0);
+					WAIT(100);
+					AI::CLEAR_PED_TASKS_IMMEDIATELY(ped_specular);
+					PED::RESURRECT_PED(ped_specular);
+					PED::REVIVE_INJURED_PED(ped_specular);
+
+					// in order to prevent them from falling in hell
+					ENTITY::SET_ENTITY_COLLISION(ped_specular, TRUE, TRUE);
+					PED::SET_PED_CAN_RAGDOLL(ped_specular, TRUE);
+
+					PED::SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped_specular, TRUE);
+					PED::SET_PED_COMBAT_ATTRIBUTES(ped_specular, 1, FALSE);
+					addwPed(ped_specular, coordsToVector(goTo.x + rnX, goTo.y + rnY, goTo.z), coordsToVector(goFrom.x + rnX, goFrom.y + rnY, goFrom.z), paramsLines[4].param, speed_rnd);
+
+					Object seq2;
+					AI::OPEN_SEQUENCE_TASK(&seq2);
+					AI::TASK_USE_MOBILE_PHONE_TIMED(0, rand() % max_time);
+					AI::TASK_GO_TO_COORD_ANY_MEANS(0, goTo.x + rnX, goTo.y + rnY, goTo.z, speed_rnd, 0, 0, 786603, 0xbf800000);
+					AI::TASK_GO_TO_COORD_ANY_MEANS(0, goFrom.x + rnX, goFrom.y + rnY, goFrom.z, speed_rnd, 0, 0, 786603, 0xbf800000);
+					AI::TASK_GO_TO_COORD_ANY_MEANS(0, goTo.x + rnX, goTo.y + rnY, goTo.z, speed_rnd, 0, 0, 786603, 0xbf800000);
+					AI::TASK_GO_TO_COORD_ANY_MEANS(0, goFrom.x + rnX, goFrom.y + rnY, goFrom.z, speed_rnd, 0, 0, 786603, 0xbf800000);
+					AI::TASK_GO_TO_COORD_ANY_MEANS(0, goTo.x + rnX, goTo.y + rnY, goTo.z, speed_rnd, 0, 0, 786603, 0xbf800000);
+					AI::TASK_GO_TO_COORD_ANY_MEANS(0, goFrom.x + rnX, goFrom.y + rnY, goFrom.z, speed_rnd, 0, 0, 786603, 0xbf800000);
+					AI::CLOSE_SEQUENCE_TASK(seq2);
+					AI::TASK_PERFORM_SEQUENCE(ped_specular, seq2);
+					AI::CLEAR_SEQUENCE_TASK(&seq2);
 				}
-
-				WAIT(100);
-				
-				ENTITY::SET_ENTITY_HEALTH(ped_specular, 0);
-				WAIT(100);
-				AI::CLEAR_PED_TASKS_IMMEDIATELY(ped_specular);
-				PED::RESURRECT_PED(ped_specular);
-				PED::REVIVE_INJURED_PED(ped_specular);
-
-				// in order to prevent them from falling in hell
-				ENTITY::SET_ENTITY_COLLISION(ped_specular, TRUE, TRUE);
-				PED::SET_PED_CAN_RAGDOLL(ped_specular, TRUE);
-
-				PED::SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped_specular, TRUE);
-				PED::SET_PED_COMBAT_ATTRIBUTES(ped_specular, 1, FALSE);
-				addwPed(ped_specular, coordsToVector(goTo.x + rnX, goTo.y + rnY, goTo.z), coordsToVector(goFrom.x + rnX, goFrom.y + rnY, goFrom.z), paramsLines[4].param, speed_rnd);
-
-				Object seq2;
-				AI::OPEN_SEQUENCE_TASK(&seq2);
-				AI::TASK_USE_MOBILE_PHONE_TIMED(0, rand() % max_time);
-				AI::TASK_GO_TO_COORD_ANY_MEANS(0, goTo.x + rnX, goTo.y + rnY, goTo.z, speed_rnd, 0, 0, 786603, 0xbf800000);
-				AI::TASK_GO_TO_COORD_ANY_MEANS(0, goFrom.x + rnX, goFrom.y + rnY, goFrom.z, speed_rnd, 0, 0, 786603, 0xbf800000);
-				AI::TASK_GO_TO_COORD_ANY_MEANS(0, goTo.x + rnX, goTo.y + rnY, goTo.z, speed_rnd, 0, 0, 786603, 0xbf800000);
-				AI::TASK_GO_TO_COORD_ANY_MEANS(0, goFrom.x + rnX, goFrom.y + rnY, goFrom.z, speed_rnd, 0, 0, 786603, 0xbf800000);
-				AI::TASK_GO_TO_COORD_ANY_MEANS(0, goTo.x + rnX, goTo.y + rnY, goTo.z, speed_rnd, 0, 0, 786603, 0xbf800000);
-				AI::TASK_GO_TO_COORD_ANY_MEANS(0, goFrom.x + rnX, goFrom.y + rnY, goFrom.z, speed_rnd, 0, 0, 786603, 0xbf800000);
-				AI::CLOSE_SEQUENCE_TASK(seq2);
-				AI::TASK_PERFORM_SEQUENCE(ped_specular, seq2);
-				AI::CLEAR_SEQUENCE_TASK(&seq2);
 			}
 		}
 			break;

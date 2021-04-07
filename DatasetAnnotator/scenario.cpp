@@ -7,6 +7,9 @@
 #include <filesystem>
 #include <string>
 
+#include <fstream>
+
+
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <time.h>
@@ -109,7 +112,7 @@ int StringToWString(std::wstring &ws, const std::string &s)
 	return 0;
 }
 
-DatasetAnnotator::DatasetAnnotator(std::string _output_path, FILE* _file, int _max_samples, int _is_night, char _task[15])
+DatasetAnnotator::DatasetAnnotator(std::string _output_path, FILE* _file, std::string _peds_file, int _max_samples, int _is_night, char _task[15])
 {
 	PLAYER::SET_EVERYONE_IGNORE_PLAYER(PLAYER::PLAYER_PED_ID(), TRUE);
 	PLAYER::SET_POLICE_IGNORE_PLAYER(PLAYER::PLAYER_PED_ID(), TRUE);
@@ -123,10 +126,14 @@ DatasetAnnotator::DatasetAnnotator(std::string _output_path, FILE* _file, int _m
 
 	this->output_path = _output_path;
 	//this->file_scenario = _file_scenario;
+	this->peds_file = _peds_file;
 	this->file = _file;
 	this->max_samples = _max_samples;
 	this->is_night = _is_night;
 	strcpy(this->task, _task);
+
+	// initialize number of peds
+	this->ped_counter = 0;
 
 	// do this but with if the secodn camera is present after loading the scanrio
 	//if (strcmp(this->task, "reID") == 0)
@@ -287,7 +294,7 @@ DatasetAnnotator::DatasetAnnotator(std::string _output_path, FILE* _file, int _m
 	else
 		FPS = 30;
 
-	debug_file << FPS << this->task << this->max_samples << "\n";
+	//debug_file << FPS << this->task << this->max_samples << "\n";
 
 	this->captureFreq = (int)(FPS / TIME_FACTOR);
 
@@ -615,7 +622,7 @@ int DatasetAnnotator::update()
 		}
 	}
 	save_frame();
-	debug_file << nsample << " " << max_samples << "\n";
+	//debug_file << nsample << " " << max_samples << "\n";
 	nsample++;
 	if (nsample == max_samples) {
 		for (int i = 0; i < nwPeds; i++) {
@@ -867,9 +874,46 @@ Cam DatasetAnnotator::lockCam(Vector3 pos, Vector3 rot) {
 void DatasetAnnotator::loadScenario(char* weather)
 {
 	//FILE *f = fopen(fname, "r");
+	// Peds file for this sequence
+	//std::ifstream p;
+	FILE *p = fopen(this->peds_file.c_str(), "r");
+	//p.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	Hash current_hash;
+	
 	Vector3 cCoords, cRot;
 	Vector3 vTP1, vTP2, vTP1_rot, vTP2_rot;
 	int stop;
+
+	//try {
+	//	p.open(this->peds_file);
+	//}
+	//catch (std::ifstream::failure e) {
+	//	debug_file << "no file " << this->peds_file << "\n";
+	//	std::cerr << e.what() << std::endl;
+	//	std::cerr << "Exception opening the peds file\n";
+	//}
+
+	//int res;
+	//for (int k = 0; k < 135; k++) {
+	//	res = fscanf(p, "%u\n", &current_hash);
+	//	this->peds_hash.push_back(current_hash);
+	//	debug_file << current_hash << " " << res << "\n";
+	//}
+
+	while (fscanf(p, "%u\n", &current_hash)==1) {
+		this->peds_hash.push_back(current_hash);
+		debug_file << current_hash << "\n";
+	}
+
+	//while (p >> current_hash)
+	//{
+	//	this->peds_hash.push_back(current_hash);
+	//	debug_file << current_hash << "\n";
+	//}
+
+	//p.close();
+	fclose(p);
+	debug_file << "closing ped file \n";
 
 	// task was read in script.c++
 	//fscanf(this->file, "%s\n", weather_type);
@@ -882,12 +926,15 @@ void DatasetAnnotator::loadScenario(char* weather)
 	GAMEPLAY::SET_OVERRIDE_WEATHER(weather);
 	GAMEPLAY::SET_WEATHER_TYPE_NOW(weather);
 
+	debug_file << "read task and weather \n";
+
 	fscanf_s(this->file, "%d[\n]?", &secondCam);
 	if (secondCam)
 		fscanf_s(this->file, "%f %f %f %f %f %f\n", &secondCamCoords.x, &secondCamCoords.y, &secondCamCoords.z, &secondCamRot.x, &secondCamRot.y, &secondCamRot.z);
 	//else
 	//	// read new line character
 	//	fscanf_s(f, "\n");
+	debug_file << "read second camera \n";
 
 	fscanf_s(this->file, "%d", &moving);
 	if (moving == 0) 
@@ -897,6 +944,8 @@ void DatasetAnnotator::loadScenario(char* weather)
 
 	fscanf_s(this->file, "%f %f %f %f %f %f\n", &vTP1.x, &vTP1.y, &vTP1.z, &vTP1_rot.x, &vTP1_rot.y, &vTP1_rot.z);
 	fscanf_s(this->file, "%f %f %f %f %f %f\n", &vTP2.x, &vTP2.y, &vTP2.z, &vTP2_rot.x, &vTP2_rot.y, &vTP2_rot.z);
+
+	debug_file << "read other stuff \n";
 
 	Entity e = PLAYER::PLAYER_PED_ID();
 
@@ -958,6 +1007,8 @@ void DatasetAnnotator::loadScenario(char* weather)
 		DatasetAnnotator::setCameraFixed(cCoords, cRot, 0, fov);
 	else
 		DatasetAnnotator::setCameraMoving(A, B, C, fov);
+
+
 }
 
 void DatasetAnnotator::spawn_peds_flow(Vector3 pos, Vector3 goFrom, Vector3 goTo, int npeds, int ngroup, int currentBehaviour, 
@@ -1127,13 +1178,47 @@ void DatasetAnnotator::spawn_peds(Vector3 pos, Vector3 goFrom, Vector3 goTo, int
 	Ped ped[100];
 	Vector3 current;
 	int i = 0;
+	
+	// count local number of peds
+	int tot_peds = 0;
 
 	int rn;
+	
+	Hash model;
 
-	for (int i = 0; i < npeds; i++) {
-		ped[i] = PED::CREATE_RANDOM_PED(pos.x, pos.y, pos.z);
-		WAIT(50);
+	if (strcmp(this->task, "reID")==0) {
+		for (int i = 0; i < npeds; i++) {
+			if (this->ped_counter < this->peds_hash.size()) {
+				model = peds_hash[ped_counter];
+				STREAMING::REQUEST_MODEL(model);
+				WAIT(300);
+
+				ped[i] = PED::CREATE_PED(26, model, pos.x, pos.y, pos.z, 0.0, FALSE, TRUE);
+				WAIT(50);
+
+				for (int componentID = 0; componentID <= 11; componentID++) {
+					PED::SET_PED_COMPONENT_VARIATION(ped[componentID], componentID, 0, 0, 0);
+				}
+
+				WAIT(50);
+
+				ped_counter++;
+				tot_peds++;
+			}
+			else
+				// if the number of peds is not sufficient, break
+				break;
+		}
+		// if the loop was interrupted, change the number of n_peds
+		n_peds = (tot_peds < npeds)? tot_peds : n_peds;
 	}
+	else {
+		for (int i = 0; i < npeds; i++) {
+			ped[i] = PED::CREATE_RANDOM_PED(pos.x, pos.y, pos.z);
+			WAIT(50);
+		}
+	}
+
 	for (int i = 0; i < npeds; i++) {
 		ENTITY::SET_ENTITY_HEALTH(ped[i], 0);
 		WAIT(50);

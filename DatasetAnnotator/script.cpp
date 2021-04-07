@@ -785,6 +785,8 @@ std::vector<std::string> skins= {
 void record(std::ofstream& strm) {
 	char path[] = "JTA\\";
 	char scenarios_path[] = "JTA-Scenarios\\";
+	// path for peds hash file
+	char peds_path[] = "JTA-Peds\\";
 
 	_mkdir(path);
 	
@@ -797,6 +799,8 @@ void record(std::ofstream& strm) {
 	DatasetAnnotator* S;
 
 	int seq_number = 0;
+	// initialize peds number used to retrieve the file of the peds
+	int peds_number = seq_number + 1;
 
 	// task initialization
 	char task[15] = "reID";
@@ -945,6 +949,8 @@ void record(std::ofstream& strm) {
 		if (fs::is_regular_file(p)) {
 			int nsamples = 0;
 			std::string output_path = std::string(path) + std::string("seq_") + std::to_string(seq_number);
+			// name of the file for the peds
+			std::string peds_file = std::string(peds_path) + "peds_" + std::to_string(peds_number) + ".txt";
 			_mkdir(output_path.c_str());
 
 			FILE *f = fopen(p.path().string().c_str(), "r");
@@ -964,15 +970,18 @@ void record(std::ofstream& strm) {
 			fseek(f, 0, SEEK_SET);
 
 			//S = new DatasetAnnotator(output_path, p.path().string().c_str(), max_samples, 0, task);
-			S = new DatasetAnnotator(output_path, f, max_samples, 0, task);
+			S = new DatasetAnnotator(output_path, f, peds_file, max_samples, 0, task);
 
 			Sleep(10);
 			while (nsamples < max_samples) {
 				nsamples = (*S).update();
 				WAIT(0);
 			}
+
 			delete static_cast <DatasetAnnotator *>(S);
 			seq_number++;
+
+			peds_number++;
 
 			// closing file ? lol, already closed in dataset annotator class (update)
 			//fclose(f);

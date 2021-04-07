@@ -35,7 +35,7 @@ class DatasetAnnotator
 public:
 	// added task
 	//DatasetAnnotator(std::string output_path, const char* file_scenario, int max_samples, int is_night, char task[15]);
-	DatasetAnnotator(std::string output_path, FILE* file, int max_samples, int is_night, char task[15]);
+	DatasetAnnotator(std::string output_path, FILE* file, std::string peds_file, int max_samples, int is_night, char task[15]);
 	int update();
 	~DatasetAnnotator();
 
@@ -43,6 +43,10 @@ private:
 	//defining task
 	char task[15]="reID";
 	FILE* file;
+	// file for loading the peds
+	std::string peds_file;
+	std::vector <Hash> peds_hash;
+	int ped_counter;
 
 	std::string output_path;
 	int sequence_index;

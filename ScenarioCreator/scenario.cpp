@@ -1569,9 +1569,9 @@ void ScenarioCreator::spawn_peds(Vector3 pos, int num_ped) {
 		
 		// set to specific ID the ped components in order to have always the same appearance
 		//WARINING USE A DIFFERENT INDEX FOR THE PED AND THE COMPONENT ID!!!!!!!
-		for (int component_id = 0; component_id <= 11; component_id++) {
-			PED::SET_PED_COMPONENT_VARIATION(ped[i], component_id, 0, 0, 0);
-		}
+		//for (int component_id = 0; component_id <= 11; component_id++) {
+		//	PED::SET_PED_COMPONENT_VARIATION(ped[i], component_id, 0, 0, 0);
+		//}
 		WAIT(50);
 	}
 

@@ -1025,35 +1025,34 @@ void DatasetAnnotator::spawn_peds_flow(Vector3 pos, Vector3 goFrom, Vector3 goTo
 	int tot_peds = 0;
 	Hash model;
 
+	debug_file << npeds << "\n";
 	if (currentBehaviour == 8) {
 		if (strcmp(this->task, "reID") == 0) {
 			for (int i = 0; i < npeds; i++) {
-				if (this->ped_counter < this->peds_hash.size()) {
+				if (this->ped_counter < 30) {
+				/*if (this->ped_counter < this->peds_hash.size()) {*/
 					model = peds_hash[ped_counter];
 					STREAMING::REQUEST_MODEL(model);
-					WAIT(350);
+					//WAIT(350);
+					//TODO: fix this because it could run infinitely
+					while (!STREAMING::HAS_MODEL_LOADED(model)) WAIT(0);
 
-					ped[i] = PED::CREATE_PED(26, model, goFrom.x, goFrom.y, goFrom.z, 0.0, FALSE, TRUE);
+					ped[i] = PED::CREATE_PED(26, model, pos.x, pos.y, pos.z, 0.0, FALSE, TRUE);
 					WAIT(50);
 
 					for (int componentID = 0; componentID <= 11; componentID++) {
-						PED::SET_PED_COMPONENT_VARIATION(ped[componentID], componentID, 0, 0, 0);
+						PED::SET_PED_COMPONENT_VARIATION(ped[i], componentID, 0, 0, 0);
 					}
-
 					WAIT(50);
 
 					this->ped_counter++;
 					tot_peds++;
-					//debug_file << "creating peds" << "tot_peds" << "\n";
 				}
-				//else
-				//	// if the number of peds is not sufficient, break
-				//	break;
+				else
+					break;
 			}
-			//debug_file << "spawn_peds_flow " << n_peds << "\n";
-			//// if the loop was interrupted, change the number of n_peds
-			//n_peds = (tot_peds < npeds) ? tot_peds : n_peds;
-			//debug_file << "spawn_peds_flow " << n_peds << "\n";
+			npeds = (tot_peds < npeds) ? tot_peds : npeds;
+			debug_file << npeds << "\n";
 		}
 		else {
 			for (int i = 0; i < npeds; i++) {
@@ -1118,32 +1117,30 @@ void DatasetAnnotator::spawn_peds_flow(Vector3 pos, Vector3 goFrom, Vector3 goTo
 	}
 
 	else if (currentBehaviour == 0) {
-
 		if (strcmp(this->task, "reID") == 0) {
 			for (int i = 0; i < npeds; i++) {
 				if (this->ped_counter < this->peds_hash.size()) {
 					model = peds_hash[ped_counter];
 					STREAMING::REQUEST_MODEL(model);
-					WAIT(350);
+					//WAIT(350);
+					//TODO: fix this because it could run infinitely
+					while (!STREAMING::HAS_MODEL_LOADED(model)) WAIT(0);
 
-					ped[i] = PED::CREATE_PED(26, model, goFrom.x, goFrom.y, goFrom.z, 0.0, FALSE, TRUE);
+					ped[i] = PED::CREATE_PED(26, model, pos.x, pos.y, pos.z, 0.0, FALSE, TRUE);
 					WAIT(50);
 
 					for (int componentID = 0; componentID <= 11; componentID++) {
-						PED::SET_PED_COMPONENT_VARIATION(ped[componentID], componentID, 0, 0, 0);
+						PED::SET_PED_COMPONENT_VARIATION(ped[i], componentID, 0, 0, 0);
 					}
-
 					WAIT(50);
 
 					this->ped_counter++;
 					tot_peds++;
 				}
-				//else
-				//	// if the number of peds is not sufficient, break
-				//	break;
+				else
+					break;
 			}
-			//// if the loop was interrupted, change the number of n_peds
-			//n_peds = (tot_peds < npeds) ? tot_peds : n_peds;
+			npeds = (tot_peds < npeds) ? tot_peds : npeds;
 		}
 		else {
 			for (int i = 0; i < npeds; i++) {
@@ -1254,45 +1251,48 @@ void DatasetAnnotator::spawn_peds(Vector3 pos, Vector3 goFrom, Vector3 goTo, int
 	int tot_peds = 0;
 	Hash model;
 
-	debug_file << "spawn_peds " << this->peds_hash.size() << "\n";
-	debug_file << "spawn_peds " << this->ped_counter << "\n";
-	debug_file << "spawn_peds " << this->task << " " << npeds << "\n";
+	//debug_file << "spawn_peds " << this->peds_hash.size() << "\n";
+	//debug_file << "spawn_peds " << this->ped_counter << "\n";
+	//debug_file << "spawn_peds " << this->task << " " << npeds << "\n";
 
 	if (strcmp(this->task, "reID")==0) {
 		for (int i = 0; i < npeds; i++) {
 			if (this->ped_counter < this->peds_hash.size()) {
+			//if (this->ped_counter < 10) {
 				model = peds_hash[ped_counter];
 				STREAMING::REQUEST_MODEL(model);
-				WAIT(350);
+				//WAIT(350);
+				//TODO: fix this because it could run infinitely
+				while (!STREAMING::HAS_MODEL_LOADED(model)) WAIT(0);
 
 				//debug_file << "model loaded\n";
 
 				ped[i] = PED::CREATE_PED(26, model, pos.x, pos.y, pos.z, 0.0, FALSE, TRUE);
 				WAIT(50);
 
-				//debug_file << "ped created\n";
+				//debug_file << "ped created " << ped[i] << "\n";
 
 				for (int componentID = 0; componentID <= 11; componentID++) {
-					PED::SET_PED_COMPONENT_VARIATION(ped[componentID], componentID, 0, 0, 0);
+					PED::SET_PED_COMPONENT_VARIATION(ped[i], componentID, 0, 0, 0);
 				}
 				WAIT(50);
 
 				//debug_file << "default clothes\n";
 
 				this->ped_counter++;
-				debug_file << "spawn_peds loop" << " " << this->peds_hash.size() << " " << this->ped_counter << "\n";
+				//debug_file << "spawn_peds loop" << " " << this->peds_hash.size() << " " << this->ped_counter << "\n";
 				tot_peds++;
 			}
-			//else
-			//	// if the number of peds is not sufficient, break
-			//	break;
+			else
+				// if the number of peds is not sufficient, break
+				break;
 		}
-		debug_file << "spawn_peds " << " " << this->peds_hash.size() << " " << this->ped_counter << "\n";
+		//debug_file << "spawn_peds " << " " << this->peds_hash.size() << " " << this->ped_counter << "\n";
 
-		//debug_file << "spawn_peds " << n_peds << "\n";
-		//// if the loop was interrupted, change the number of n_peds
-		//n_peds = (tot_peds < npeds)? tot_peds : n_peds;
-		//debug_file << "spawn_peds " << n_peds << "\n";
+		//debug_file << "spawn_peds " << npeds << "\n";
+		// if the loop was interrupted, change the number of n_peds
+		npeds = (tot_peds < npeds)? tot_peds : npeds;
+		//debug_file << "spawn_peds " << npeds << "\n";
 	}
 	else {
 		for (int i = 0; i < npeds; i++) {

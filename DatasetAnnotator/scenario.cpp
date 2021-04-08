@@ -1025,12 +1025,11 @@ void DatasetAnnotator::spawn_peds_flow(Vector3 pos, Vector3 goFrom, Vector3 goTo
 	int tot_peds = 0;
 	Hash model;
 
-	debug_file << npeds << "\n";
+	//debug_file << npeds << "\n";
 	if (currentBehaviour == 8) {
 		if (strcmp(this->task, "reID") == 0) {
 			for (int i = 0; i < npeds; i++) {
-				if (this->ped_counter < 30) {
-				/*if (this->ped_counter < this->peds_hash.size()) {*/
+				if (this->ped_counter < this->peds_hash.size()) {
 					model = peds_hash[ped_counter];
 					STREAMING::REQUEST_MODEL(model);
 					//WAIT(350);
@@ -1052,7 +1051,7 @@ void DatasetAnnotator::spawn_peds_flow(Vector3 pos, Vector3 goFrom, Vector3 goTo
 					break;
 			}
 			npeds = (tot_peds < npeds) ? tot_peds : npeds;
-			debug_file << npeds << "\n";
+			//debug_file << npeds << "\n";
 		}
 		else {
 			for (int i = 0; i < npeds; i++) {

@@ -1080,6 +1080,12 @@ void DatasetAnnotator::spawn_peds_flow(Vector3 pos, Vector3 goFrom, Vector3 goTo
 			PED::SET_PED_CAN_RAGDOLL(ped[i], TRUE);
 			PED::SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped[i], TRUE);
 			PED::SET_PED_COMBAT_ATTRIBUTES(ped[i], 1, FALSE);
+			//debug_file << "set attrinutes \n for ped " << i << "\n";
+			// make players not fight
+			//if (strcmp(this->task, "reID") == 0) {
+			//	PED::SET_PED_COMBAT_ATTRIBUTES(ped[i], 46, FALSE);
+			//	PED::SET_PED_AS_ENEMY(ped[i], FALSE);
+			//}
 		}
 		if (DEMO)
 			WAIT(500);
@@ -1160,6 +1166,11 @@ void DatasetAnnotator::spawn_peds_flow(Vector3 pos, Vector3 goFrom, Vector3 goTo
 			PED::SET_PED_CAN_RAGDOLL(ped[i], TRUE);
 			PED::SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped[i], TRUE);
 			PED::SET_PED_COMBAT_ATTRIBUTES(ped[i], 1, FALSE);
+			//// make players not fight
+			//if (strcmp(this->task, "reID") == 0) {
+			//	PED::SET_PED_COMBAT_ATTRIBUTES(ped[i], 46, FALSE);
+			//	PED::SET_PED_AS_ENEMY(ped[i], FALSE);
+			//}
 		}
 	}
 
@@ -1313,6 +1324,11 @@ void DatasetAnnotator::spawn_peds(Vector3 pos, Vector3 goFrom, Vector3 goTo, int
 		PED::SET_PED_CAN_RAGDOLL(ped[i], TRUE);
 		PED::SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped[i], TRUE);
 		PED::SET_PED_COMBAT_ATTRIBUTES(ped[i], 1, FALSE);
+		//// make players not fight
+		//if (strcmp(this->task, "reID") == 0) {
+		//	PED::SET_PED_COMBAT_ATTRIBUTES(ped[i], 46, FALSE);
+		//	PED::SET_PED_AS_ENEMY(ped[i], FALSE);
+		//}
 	}
 	
 

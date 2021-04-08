@@ -28,6 +28,7 @@ char task[15] = "reID";
 //boolean for second camera
 bool secondCam = FALSE;
 Vector3 secondCamCoords, secondCamRot;
+std::vector <Ped> created_peds;
 
 
 //debug file
@@ -700,7 +701,8 @@ void ScenarioCreator::main_menu()
 void ScenarioCreator::peds_menu()
 {
 	const float lineWidth = 250.0;
-	const int lineCount = 4;
+	// Adding a line for deleting the created peds
+	const int lineCount = 5;
 	menuActive = true;
 
 	std::string caption = "PEDS";
@@ -709,7 +711,8 @@ void ScenarioCreator::peds_menu()
 		"NUMBER",
 		"BEHAVIOUR",
 		"GROUP",
-		"SPAWN PEDS"
+		"SPAWN PEDS",
+		"DELETE PEDS"
 	};
 
 	DWORD waitTime = 150;
@@ -766,6 +769,13 @@ void ScenarioCreator::peds_menu()
 					spawn_peds(goFrom, nPeds);
 				else
 					spawn_peds(playerCoords, nPeds);
+				break;
+			case 4:
+				// delete all created peds
+				for (int i = 0; i < created_peds.size(); i++) {
+					PED::DELETE_PED(&created_peds[i]);
+				}
+				created_peds.clear();
 				break;
 			}
 			waitTime = 200;
@@ -1573,8 +1583,11 @@ void ScenarioCreator::spawn_peds(Vector3 pos, int num_ped) {
 		//	PED::SET_PED_COMPONENT_VARIATION(ped[i], component_id, 0, 0, 0);
 		//}
 		WAIT(50);
+		// add all peds to the created_peds
+		created_peds.push_back(ped[i]);
 	}
 
+	
 	//for (int i = 0; i < num_ped; i++) {
 	//	ped[i] = PED::CREATE_RANDOM_PED(pos.x, pos.y, pos.z);
 	//	debug_file << ped[i] << "\n";
@@ -1751,6 +1764,9 @@ void ScenarioCreator::spawn_peds(Vector3 pos, int num_ped) {
 
 					int ped_specular = PED::CREATE_RANDOM_PED(goTo.x, goTo.y, goTo.z);
 					WAIT(100);
+
+					// add all peds to the created_peds
+					created_peds.push_back(ped_specular);
 
 					ENTITY::SET_ENTITY_HEALTH(ped_specular, 0);
 					WAIT(100);

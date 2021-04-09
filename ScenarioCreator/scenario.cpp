@@ -458,6 +458,11 @@ void ScenarioCreator::update() {
 
 	listen_for_keystrokes();
 
+	//STREAMING::SET_PED_POPULATION_BUDGET(0);
+	// remove peds and cops in the area
+	GAMEPLAY::CLEAR_AREA_OF_PEDS(0, 0, 0, 10000, 1);
+	GAMEPLAY::CLEAR_AREA_OF_COPS(0, 0, 0, 10000, 1);
+
 	cameraCoords();
 
 	stopControl();

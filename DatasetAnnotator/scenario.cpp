@@ -376,6 +376,12 @@ DatasetAnnotator::~DatasetAnnotator()
 
 int DatasetAnnotator::update()
 {
+	//STREAMING::SET_PED_POPULATION_BUDGET(0);
+	// remove peds and cops in the area
+	GAMEPLAY::CLEAR_AREA_OF_PEDS(0, 0, 0, 10000, 1);
+	GAMEPLAY::CLEAR_AREA_OF_COPS(0, 0, 0, 10000, 1);
+
+
 	float delay = ((float)(std::clock() - lastRecordingTime)) / CLOCKS_PER_SEC;
 	if (delay >= recordingPeriod)
 		lastRecordingTime = std::clock();

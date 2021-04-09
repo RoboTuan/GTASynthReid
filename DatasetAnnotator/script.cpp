@@ -948,26 +948,29 @@ void record(std::ofstream& strm) {
 	for (auto &p : fs::recursive_directory_iterator(scenarios_path)) {
 		if (fs::is_regular_file(p)) {
 			int nsamples = 0;
-			std::string output_path = std::string(path) + std::string("seq_") + std::to_string(seq_number);
-			// name of the file for the peds
-			std::string peds_file = std::string(peds_path) + "peds_" + std::to_string(peds_number) + ".txt";
-			_mkdir(output_path.c_str());
 
 			FILE *f = fopen(p.path().string().c_str(), "r");
 			fscanf(f, "%s %*s\n", task);
 			fscanf(f, "%d", &secondCam);
+
+			// resetting pointer of the file
+			fseek(f, 0, SEEK_SET);
 
 			if (secondCam)
 				FPS = 60;
 			else
 				FPS = 30;
 
+			std::string output_path = std::string(path) + std::string("seq_") + std::to_string(seq_number) + "_" + std::to_string(FPS);
+			// name of the file for the peds
+			std::string peds_file = std::string(peds_path) + "peds_" + std::to_string(peds_number) + ".txt";
+			_mkdir(output_path.c_str());
+
+
 			// 1 second video for debugging, put to 30 for final version
 			max_samples = FPS * 30 * 1 + 1;
 			strm << FPS << task << max_samples << "\n";
 
-			// resetting pointer of the file
-			fseek(f, 0, SEEK_SET);
 
 			//S = new DatasetAnnotator(output_path, p.path().string().c_str(), max_samples, 0, task);
 			S = new DatasetAnnotator(output_path, f, peds_file, max_samples, 0, task);

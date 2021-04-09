@@ -35,6 +35,7 @@ char weather_type[15] = "EXTRASUNNY";
 bool secondCam = FALSE;
 int active_cam = 1;
 Vector3 secondCamCoords, secondCamRot;
+Vector3 tmpCamCoords, tmpCamRot;
 
 //debug file
 std::ofstream debug_file("debug_file.txt");
@@ -318,7 +319,9 @@ DatasetAnnotator::DatasetAnnotator(std::string _output_path, FILE* _file, std::s
 	GetEncoderClsid(L"image/jpeg", &pngClsid);
 
 	// inizialize the int used to count the saved frame
-	nsample = 0;
+	//nsample = 0;
+	// start from sample 1
+	nsample = 1;
 
 	//Avoid bad things such as getting killed by the police, robbed, dying in car accidents or other horrible stuff
 	PLAYER::SET_EVERYONE_IGNORE_PLAYER(player, TRUE);
@@ -635,16 +638,27 @@ int DatasetAnnotator::update()
 
 	// change camera if camera 2 is present
 	if (secondCam) {
-		if (active_cam == 1) {
-			CAM::SET_CAM_COORD(this->camera, secondCamCoords.x, secondCamCoords.y, secondCamCoords.z + 0);
-			CAM::SET_CAM_ROT(this->camera, secondCamRot.x, secondCamRot.y, secondCamRot.z + 0, 2);
-			active_cam = 2;
-		}
-		else {
-			CAM::SET_CAM_COORD(this->camera, this->cam_coords.x, this->cam_coords.y, this->cam_coords.z + 0);
-			CAM::SET_CAM_ROT(this->camera, this->cam_rot.x, this->cam_rot.y, this->cam_rot.z + 0, 2);
-			active_cam = 1;
-		}
+		//if (active_cam == 1) {
+		//	CAM::SET_CAM_COORD(this->camera, secondCamCoords.x, secondCamCoords.y, secondCamCoords.z + 0);
+		//	CAM::SET_CAM_ROT(this->camera, secondCamRot.x, secondCamRot.y, secondCamRot.z + 0, 2);
+		//	active_cam = 2;
+		//}
+		//else {
+		//	CAM::SET_CAM_COORD(this->camera, this->cam_coords.x, this->cam_coords.y, this->cam_coords.z + 0);
+		//	CAM::SET_CAM_ROT(this->camera, this->cam_rot.x, this->cam_rot.y, this->cam_rot.z + 0, 2);
+		//	active_cam = 1;
+		//}
+
+		tmpCamCoords = this->cam_coords;
+		this->cam_coords = secondCamCoords;
+		secondCamCoords = tmpCamCoords;
+
+		tmpCamRot = this->cam_rot;
+		this->cam_rot = secondCamRot;
+		secondCamRot = tmpCamRot;
+
+		CAM::SET_CAM_COORD(this->camera, this->cam_coords.x, this->cam_coords.y, this->cam_coords.z + 0);
+		CAM::SET_CAM_ROT(this->camera, this->cam_rot.x, this->cam_rot.y, this->cam_rot.z + 0, 2);
 	}
 
 	return nsample;
@@ -708,6 +722,7 @@ void DatasetAnnotator::get_2D_from_3D(Vector3 v, float *x2d, float *y2d) {
 }
 
 void DatasetAnnotator::save_frame() {
+	debug_file << windowWidth << " x " << windowHeight << "\n";
 	StretchBlt(hCaptureDC, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, hWindowDC, 0, 0, windowWidth, windowHeight, SRCCOPY | CAPTUREBLT);
 	Gdiplus::Bitmap image(hCaptureBitmap, (HPALETTE)0);
 	std::wstring ws;

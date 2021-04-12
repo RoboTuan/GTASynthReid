@@ -61,9 +61,10 @@ def main(in_frames_path, json_file_path, out_bboxes_path, hide):
 	Script that provides a visual representation of the annotations
 	"""
 
-	# Example in_frames_path: ~/Desktop/JTA/seq_0_60/cam1/
+	# Example in_frames_path: ~/Desktop/JTA/seq_0_day_60/cam1/
 	camera = in_frames_path.split("/")[-2]
 	seq = in_frames_path.split("_")[1]
+	day_night = in_frames_path.split("_")[2][0]
 
 	out_bboxes_path = Path(out_bboxes_path)
 	if not out_bboxes_path.parent.exists() and out_bboxes_path.parent != Path(''):
@@ -104,7 +105,7 @@ def main(in_frames_path, json_file_path, out_bboxes_path, hide):
 			color = colors[int(p_id)%len(colors)]
 
 			str_frame_number = str(frame_number).zfill(4)
-			bbox_name = p_id_folder + str(int(p_id)) + "_" + str_frame_number + "_s" + seq + "c" + camera[-1] + ".jpeg"
+			bbox_name = p_id_folder + str(int(p_id)) + "_" + str_frame_number + "_s" + day_night + seq + "c" + camera[-1] + ".jpeg"
 			image = pose.draw(image=image, color=color, bbox_name=bbox_name)
 
 		#writer.append_data(np.vstack([image, image[-8:, :]]))

@@ -16,13 +16,14 @@ path = args.path_to_coords
 usecols=["frame", "pedestrian_id", "joint_type", "2D_x", "2D_y", "3D_x", "3D_y", "3D_z", "occluded", "self_occluded"]
 
 seq = path.split("/")[-2].split("_")[1]
+day_night = path.split("/")[-2].split("_")[2]
 FPS = int(path.split("/")[-2].split("_")[-1])
 coords = pd.read_csv(path, usecols=usecols)
 
 if FPS == 60:
     annotations = path.split("coords.csv")[0] + "seq_"
-    json_coords1 = open(annotations + seq + "_" + "cam1.json", 'w')
-    json_coords2 = open(annotations + seq + "_" + "cam2.json", 'w')
+    json_coords1 = open(annotations + seq + "_" + day_night + "_cam1.json", 'w')
+    json_coords2 = open(annotations + seq + "_" + day_night + "_cam2.json", 'w')
     print(annotations)
     print(annotations + seq + "_" + "cam1.json")
     print(annotations + seq + "_" + "cam2.json")

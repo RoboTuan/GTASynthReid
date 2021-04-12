@@ -151,7 +151,7 @@ class Pose(list):
 
 
 		# Get bounding box
-		x_min, y_min, width, height = self.bbox_2d
+		x_min, y_min, width, height = self.bbox_2d_padded
 		#print(x_min, y_min, width, height)
 		# If padding is selected for the bounding box,
 		# convert the box to np.float32 in order to be able to

@@ -949,13 +949,13 @@ void record(std::ofstream& strm) {
 		if (fs::is_regular_file(p)) {
 			int nsamples = 0;
 
-			strm << seq_number << " " << peds_number << "\n";
+			//strm << seq_number << " " << peds_number << "\n";
 
 			FILE *f = fopen(p.path().string().c_str(), "r");
 			fscanf(f, "%s %*s %*s\n", task);
 			fscanf(f, "%d", &secondCam);
 
-			strm << task << " " << secondCam << "\n";
+			//strm << task << " " << secondCam << "\n";
 
 			// resetting pointer of the file
 			fseek(f, 0, SEEK_SET);
@@ -1002,13 +1002,13 @@ void record(std::ofstream& strm) {
 		if (fs::is_regular_file(p)) {
 			int nsamples = 0;
 
-			strm << seq_number << " " << peds_number << "\n";
+			//strm << seq_number << " " << peds_number << "\n";
 
 			FILE *f = fopen(p.path().string().c_str(), "r");
 			fscanf(f, "%s %*s %*s\n", task);
 			fscanf(f, "%d", &secondCam);
 
-			strm << task << " " << secondCam << "\n";
+			//strm << task << " " << secondCam << "\n";
 
 			// resetting pointer of the file
 			fseek(f, 0, SEEK_SET);

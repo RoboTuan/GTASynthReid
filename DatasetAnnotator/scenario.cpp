@@ -735,7 +735,7 @@ void DatasetAnnotator::get_2D_from_3D(Vector3 v, float *x2d, float *y2d) {
 }
 
 void DatasetAnnotator::save_frame() {
-	debug_file << windowWidth << " x " << windowHeight << "\n";
+	//debug_file << windowWidth << " x " << windowHeight << "\n";
 	StretchBlt(hCaptureDC, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, hWindowDC, 0, 0, windowWidth, windowHeight, SRCCOPY | CAPTUREBLT);
 	Gdiplus::Bitmap image(hCaptureBitmap, (HPALETTE)0);
 	std::wstring ws;
@@ -946,7 +946,7 @@ void DatasetAnnotator::loadScenario(char* weather)
 	// task was read in script.c++
 	//fscanf(this->file, "%s\n", weather_type);
 	fscanf(this->file, "%s %s %s\n", this->task, weather_type, this->place);
-	debug_file << this->file << " " << this->task << " " << weather_type << " " << this->place << "\n";
+	//debug_file << this->file << " " << this->task << " " << weather_type << " " << this->place << "\n";
 	if (strcmp(weather_type, "random") != 0)
 		weather = weather_type;
 

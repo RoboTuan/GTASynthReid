@@ -211,7 +211,9 @@ DatasetAnnotator::DatasetAnnotator(std::string _output_path, FILE* _file, std::s
 	log_file.open(output_path + "\\log.txt");
 	coords_file.open(output_path + "\\coords.csv");
 	coords_file << "frame,pedestrian_id,joint_type,2D_x,2D_y,3D_x,3D_y,3D_z,occluded,self_occluded,";
-	coords_file << "cam_3D_x,cam_3D_y,cam_3D_z,cam_rot_x,cam_rot_y,cam_rot_z,fov\n";
+	// adding date: "month_hours:minutes:seconds"
+	coords_file << "cam_3D_x,cam_3D_y,cam_3D_z,cam_rot_x,cam_rot_y,cam_rot_z,fov,date\n";
+
 
 	this->player = PLAYER::PLAYER_ID();
 	this->playerPed = PLAYER::PLAYER_PED_ID();
@@ -626,6 +628,11 @@ int DatasetAnnotator::update()
 				coords_file << "," << cam_rot.y;	      // camera 3D rotation y [degrees]
 				coords_file << "," << cam_rot.z;	      // camera 3D rotation z [degrees]
 				coords_file << "," << fov;				  // camera FOV  [degrees]
+				// writing month_hours:minutes:seconds
+				coords_file << "," << TIME::GET_CLOCK_MONTH();
+ 				coords_file << "_" << TIME::GET_CLOCK_HOURS();
+				coords_file << ":" << TIME::GET_CLOCK_MINUTES();
+				coords_file << ":" << TIME::GET_CLOCK_SECONDS();
 				coords_file << "\n";
 			}
 		}

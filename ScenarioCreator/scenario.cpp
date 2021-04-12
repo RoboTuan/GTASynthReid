@@ -1202,7 +1202,8 @@ void ScenarioCreator::time_menu()
 void ScenarioCreator::weather_menu()
 {
 	const float lineWidth = 250.0;
-	const int lineCount = 14;
+	// Added XMAS weather
+	const int lineCount = 15;
 	menuActive = true;
 
 	std::string caption = "WEATHER  OPTIONS";
@@ -1222,6 +1223,7 @@ void ScenarioCreator::weather_menu()
 		"SNOW",
 		"BLIZZARD",
 		"SNOWLIGHT",
+		"XMAS"
 	};
 
 	DWORD waitTime = 150;

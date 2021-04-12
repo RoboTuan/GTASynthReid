@@ -41,12 +41,14 @@ public:
 
 private:
 	//defining task
-	char task[15]="reID";
+	char task[15] = "reID";
 	FILE* file;
 	// file for loading the peds
 	std::string peds_file;
 	std::vector <Hash> peds_hash;
 	int ped_counter;
+	// Saving the place in the log%d.txt file
+	char place[15] = "DEFAULT";
 
 	std::string output_path;
 	int sequence_index;

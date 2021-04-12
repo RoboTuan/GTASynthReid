@@ -945,7 +945,8 @@ void DatasetAnnotator::loadScenario(char* weather)
 
 	// task was read in script.c++
 	//fscanf(this->file, "%s\n", weather_type);
-	fscanf(this->file, "%s %s\n", this->task, weather_type);
+	fscanf(this->file, "%s %s %s\n", this->task, weather_type, this->place);
+	debug_file << this->file << " " << this->task << " " << weather_type << " " << this->place << "\n";
 	if (strcmp(weather_type, "random") != 0)
 		weather = weather_type;
 

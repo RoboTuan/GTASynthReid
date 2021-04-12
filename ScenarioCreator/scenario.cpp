@@ -29,6 +29,8 @@ char task[15] = "reID";
 bool secondCam = FALSE;
 Vector3 secondCamCoords, secondCamRot;
 std::vector <Ped> created_peds;
+//Saving the place, initializing to default
+char place[25] = "DEFAULT";
 
 
 //debug file
@@ -335,10 +337,12 @@ void saveFile()
 	fname = fname + std::string(filesPath) + std::string(fileName);
 	f = fopen(fname.c_str(), "w");
 
+
 	if (save_weather)
-		fprintf_s(f, "%s %s\n", task, weather_type);
+		fprintf_s(f, "%s %s %s\n", task, weather_type, place);
 	else
-		fprintf_s(f, "%s %s\n", task, "random");
+		fprintf_s(f, "%s %s %s\n", task, "random", place);
+
 
 	if(secondCam)
 		fprintf_s(f, "%d %f %f %f %f %f %f\n",(int)secondCam, secondCamCoords.x, secondCamCoords.y, secondCamCoords.z, secondCamRot.x, secondCamRot.y, secondCamRot.z);
@@ -1087,6 +1091,16 @@ void ScenarioCreator::place_menu()
 		{
 			Entity e = PLAYER::PLAYER_PED_ID();
 			ENTITY::SET_ENTITY_COORDS_NO_OFFSET(e, lines[activeLineIndexPlace].x, lines[activeLineIndexPlace].y, lines[activeLineIndexPlace].z, 0, 0, 1);
+			// Save the place
+			strcpy(place, lines[activeLineIndexPlace].text);
+			// REMOVE SPACES FRO THE PLACE STRING OTHERWISE 
+			// THERE WILL BE PROBLEMS WHEN READING THE log%d.txt FILE
+			for (int c = 0; place[c] != '\0'; c++) {
+				if (isspace(place[c]))
+					place[c] = '_';
+				else
+					continue;
+			}
 		}
 		else if (bBack)
 		{

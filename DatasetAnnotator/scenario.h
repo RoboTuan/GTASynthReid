@@ -48,7 +48,7 @@ private:
 	std::vector <Hash> peds_hash;
 	int ped_counter;
 	// Saving the place in the log%d.txt file
-	char place[15] = "DEFAULT";
+	char place[25] = "DEFAULT";
 
 	std::string output_path;
 	int sequence_index;

@@ -965,7 +965,7 @@ void record(std::ofstream& strm) {
 			else
 				FPS = 30;
 
-			std::string output_path = std::string(path) + std::string("seq_") + std::to_string(seq_number) + "_" + std::to_string(FPS);
+			std::string output_path = std::string(path) + std::string("seq_") + std::to_string(seq_number) + "_day_" + std::to_string(FPS);
 			// name of the file for the peds
 			std::string peds_file = std::string(peds_path) + "peds_" + std::to_string(peds_number) + ".txt";
 			_mkdir(output_path.c_str());

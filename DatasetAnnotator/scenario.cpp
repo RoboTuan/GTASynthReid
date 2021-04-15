@@ -282,11 +282,14 @@ DatasetAnnotator::DatasetAnnotator(std::string _output_path, FILE* _file, std::s
 		time_h = random_int(7, 18);
 		weather = (char *)weathers_day[rand() % weathers_day.size()];
 	}
-	time_m = random_int(0, 59);
-	time_s = random_int(0, 59);
+	// Setting default minutes and seconds to 0
+	//time_m = random_int(0, 59);
+	//time_s = random_int(0, 59);
 	date_m = random_int(1, 12);
 
-	TIME::SET_CLOCK_TIME(time_h, time_m, time_s);
+	// Setting default minutes and seconds to 0
+	//TIME::SET_CLOCK_TIME(time_h, time_m, time_s);
+	TIME::SET_CLOCK_TIME(time_h, 0, 0);
 	debug_file << TIME::GET_CLOCK_HOURS() << "\n";
 
 	// moving weather creation inside loadScenario to allow for predefined weather
@@ -967,8 +970,9 @@ void DatasetAnnotator::loadScenario(char* weather)
 	if ((strcmp(weather, "BLIZZARD") == 0) || (strcmp(weather, "SNOW") == 0)) {
 		if (this->is_night) {
 			int time_h = random_int(4, 5);
-			int time_m = random_int(0, 59);
-			int time_s = random_int(0, 59);
+			// Setting default minutes and seconds to 0
+			int time_m = 0;
+			int time_s = 0;
 			int date_m = random_int(1, 12);
 
 			TIME::SET_CLOCK_TIME(time_h, time_m, time_s);

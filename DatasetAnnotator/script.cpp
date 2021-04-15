@@ -1005,10 +1005,18 @@ void record(std::ofstream& strm) {
 		if (fs::is_regular_file(p)) {
 			int nsamples = 0;
 
-			//strm << seq_number << " " << peds_number << "\n";
+			strm << seq_number << " " << peds_number << "\n";
 
 			FILE *f = fopen(p.path().string().c_str(), "r");
 			fscanf(f, "%d %d\n", &record_night, &wind);
+			if (!record_night) {
+				fclose(f);
+				seq_number++;
+				peds_number;
+				strm << seq_number << " " << peds_number << "\n";
+				continue;
+			}
+
 			fscanf(f, "%s %*s %*s\n", task);
 			fscanf(f, "%d", &secondCam);
 

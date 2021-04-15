@@ -25,12 +25,14 @@ std::vector <Hash> hashes;
 char weather_type[] = "EXTRASUNNY";
 bool save_weather = TRUE;
 char task[15] = "reID";
-//boolean for second camera
+// boolean for second camera
 bool secondCam = FALSE;
 Vector3 secondCamCoords, secondCamRot;
 std::vector <Ped> created_peds;
-//Saving the place, initializing to default
+// Saving the place, initializing to default
 char place[25] = "DEFAULT";
+// Save nigth option
+bool record_night = TRUE;
 
 
 //debug file
@@ -337,6 +339,8 @@ void saveFile()
 	fname = fname + std::string(filesPath) + std::string(fileName);
 	f = fopen(fname.c_str(), "w");
 
+	// Save wind and night options
+	fprintf_s(f, "%d %d\n", record_night, wind);
 
 	if (save_weather)
 		fprintf_s(f, "%s %s %s\n", task, weather_type, place);
@@ -1918,7 +1922,8 @@ void ScenarioCreator::file_menu()
 {
 	const float lineWidth = 250.0;
 	//const int lineCount = 4;
-	const int lineCount = 6;
+	//const int lineCount = 6;
+	const int lineCount = 7;
 	menuActive = true;
 	std::string caption = "FILE MANAGER";
 
@@ -1930,12 +1935,15 @@ void ScenarioCreator::file_menu()
 		"CLEAR LOG DATA",
 		"Task",
 		"Save Weather",
+		"Record Night"
 	};
 
 	// showing the task on the menu
 	sprintf_s(lines[4], "Task: %s", task);
 	// showing save weather on the menu
 	sprintf_s(lines[5], "Save Weather: %s", save_weather ? "True" : "False");
+	// showing the nigth option on the menu
+	sprintf_s(lines[6], "Record Night: %s", record_night ? "True" : "False");
 
 	char loadedFile[40];
 	DWORD waitTime = 150;
@@ -2016,6 +2024,10 @@ void ScenarioCreator::file_menu()
 					save_weather = TRUE;
 				// showing save weather on the menu
 				sprintf_s(lines[5], "Save Weather: %s", save_weather? "True" : "False");
+				break;
+			case 6:
+				record_night = !record_night;
+				sprintf_s(lines[6], "Record Night: %s", record_night ? "True" : "False");
 				break;
 			default:
 				break;

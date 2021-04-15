@@ -265,15 +265,21 @@ DatasetAnnotator::DatasetAnnotator(std::string _output_path, FILE* _file, std::s
 	int date_m;
 	char* weather;
 
-	std::vector<int> night_hours = { 20, 22, 23, 4, 5, 6 };
+	// limiting night hours to 5 instead of 6
+	//std::vector<int> night_hours = { 20, 22, 23, 4, 5, 6 };
+	std::vector<int> night_hours = { 20, 22, 23, 4, 5};
+
 
 	// set time
 	if (is_night) {
-		time_h = night_hours[random_int(0, 5)];
+		// limiting night hours to 5 instead of 6
+		//time_h = night_hours[random_int(0, 5)];
+		time_h = night_hours[random_int(0, 4)];
 		weather = (char *)weathers_night[rand() % weathers_night.size()];
 	}
 	else {
-		time_h = random_int(7, 19);
+		// limiting day hours to 18 instead of 19
+		time_h = random_int(7, 18);
 		weather = (char *)weathers_day[rand() % weathers_day.size()];
 	}
 	time_m = random_int(0, 59);

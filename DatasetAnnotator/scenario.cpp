@@ -36,7 +36,7 @@ bool secondCam = FALSE;
 int active_cam = 1;
 Vector3 secondCamCoords, secondCamRot;
 Vector3 tmpCamCoords, tmpCamRot;
-
+bool wind = FALSE;
 //debug file
 std::ofstream debug_file("debug_file.txt");
 
@@ -281,6 +281,7 @@ DatasetAnnotator::DatasetAnnotator(std::string _output_path, FILE* _file, std::s
 	date_m = random_int(1, 12);
 
 	TIME::SET_CLOCK_TIME(time_h, time_m, time_s);
+	debug_file << TIME::GET_CLOCK_HOURS() << "\n";
 
 	// moving weather creation inside loadScenario to allow for predefined weather
 	// randomizing weather
@@ -945,6 +946,8 @@ void DatasetAnnotator::loadScenario(char* weather)
 
 	// task was read in script.c++
 	//fscanf(this->file, "%s\n", weather_type);
+	fscanf(this->file, "%*d %d\n", &wind);
+	debug_file << wind << "\n";
 	fscanf(this->file, "%s %s %s\n", this->task, weather_type, this->place);
 	//debug_file << this->file << " " << this->task << " " << weather_type << " " << this->place << "\n";
 	if (strcmp(weather_type, "random") != 0)
@@ -954,6 +957,36 @@ void DatasetAnnotator::loadScenario(char* weather)
 	GAMEPLAY::CLEAR_WEATHER_TYPE_PERSIST();
 	GAMEPLAY::SET_OVERRIDE_WEATHER(weather);
 	GAMEPLAY::SET_WEATHER_TYPE_NOW(weather);
+
+	if ((strcmp(weather, "BLIZZARD") == 0) || (strcmp(weather, "SNOW") == 0)) {
+		if (this->is_night) {
+			int time_h = random_int(4, 5);
+			int time_m = random_int(0, 59);
+			int time_s = random_int(0, 59);
+			int date_m = random_int(1, 12);
+
+			TIME::SET_CLOCK_TIME(time_h, time_m, time_s);
+
+			debug_file << "changing " << TIME::GET_CLOCK_HOURS() << "\n";
+
+		}
+
+	}
+
+	if (wind)
+	{	
+		GAMEPLAY::SET_WIND(1.0);
+		GAMEPLAY::SET_WIND_SPEED(11.99f);
+		GAMEPLAY::SET_WIND_DIRECTION(ENTITY::GET_ENTITY_HEADING(PLAYER::PLAYER_PED_ID()));
+		debug_file << "wind yes\n";
+
+	}
+	else
+	{
+		GAMEPLAY::SET_WIND(0.0);
+		GAMEPLAY::SET_WIND_SPEED(0.0);
+		debug_file << "wind no\n";
+	}
 
 	//debug_file << "read task and weather \n";
 

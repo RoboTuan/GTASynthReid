@@ -806,6 +806,8 @@ void record(std::ofstream& strm) {
 	char task[15] = "reID";
 	bool secondCam = FALSE;
 	int FPS;
+	bool record_night = TRUE;
+	bool wind = FALSE;
 
 	std::ofstream ped_variations("ped_variations.txt");
 
@@ -952,6 +954,7 @@ void record(std::ofstream& strm) {
 			//strm << seq_number << " " << peds_number << "\n";
 
 			FILE *f = fopen(p.path().string().c_str(), "r");
+			fscanf(f, "%d %d\n", &record_night, &wind);
 			fscanf(f, "%s %*s %*s\n", task);
 			fscanf(f, "%d", &secondCam);
 
@@ -1005,6 +1008,7 @@ void record(std::ofstream& strm) {
 			//strm << seq_number << " " << peds_number << "\n";
 
 			FILE *f = fopen(p.path().string().c_str(), "r");
+			fscanf(f, "%d %d\n", &record_night, &wind);
 			fscanf(f, "%s %*s %*s\n", task);
 			fscanf(f, "%d", &secondCam);
 

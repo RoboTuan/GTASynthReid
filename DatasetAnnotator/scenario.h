@@ -49,6 +49,7 @@ private:
 	int ped_counter;
 	// Saving the place in the log%d.txt file
 	char place[25] = "DEFAULT";
+	//bool wind = FALSE;
 
 	std::string output_path;
 	int sequence_index;

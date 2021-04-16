@@ -59,6 +59,23 @@ class Pose(list):
 				return False
 		return True
 
+	@property
+	def occluded_percentage(self):
+		# type: () -> bool
+		"""
+		:return: True if 50% or more of the joints are occluded
+		"""
+		count = 0
+
+		for j in self:
+			if j.occ:
+				count += 1
+
+		if count/len(self) >= 0.5:
+			# print(len(self))
+			return True
+		else:
+			return False
 
 	@property
 	def bbox_2d(self):
@@ -193,62 +210,72 @@ class Pose(list):
 
 			# Image shape: (1080, 1920, 3)-> (heigh, width, channels)
 
-			# If the width or height are gigantic, don't save this boundin box
+			# If the width or height are gigantic, don't save this bounding box
 			if width >= image.shape[1]/2 or height >= image.shape[0]/2:
-				return image
+				return None
 
 			# If the leftmost point of the bbox is outside the rightmost
 			# point of the image, don't save this bounding box
 			if start_point[0] >= image.shape[1]:
 				# print(start_point[0], image.shape[1])
-				return image
+				return None
 
 			# If the rightmost point of the bbox is outside the leftmost
 			# point of the image, don't save this bounding box
 			if end_point[0] < 0:
 				# print(start_point[0], image.shape[1])
-				return image
+				return None
 
 			# If the bottommost point of the bbox is above the topmost
 			# point of the image, don't save this bounding box
 			if end_point[1] >= image.shape[0]:
 				# print(end_point[1], start_point[1], image.shape)
-				return image
+				return None
 
 			# If the topmost point of the bbox is under the bottommost
 			# point of the image, don't save this bounding box
 			if start_point[1] < 0:
-				return image
+				return None
 
 
 			# If the leftmost point of the bbox is outside the leftmost
 			# point of the image, put the former equal to the latter
 			if start_point[0] < 0:
-				start_point = (0, start_point[1])
+				if end_point[0] - 0 > width/2:
+					start_point = (0, start_point[1])
+				else:
+					return None
 
 			# If the rightmost point of the bbox is outside the rightmost
 			# point of the image, put the former equal to the latter
 			if end_point[0] >= image.shape[1]:
-				# print(end_point[0])
-				original_area = (start_point[1]-end_point[1]) * (end_point[0]-start_point[0])
-				end_point = (image.shape[1] - 1, end_point[1])
-				# print(end_point[0])
-				new_area = (start_point[1]-end_point[1]) * (end_point[0]-start_point[0])	
+				#original_area = (start_point[1]-end_point[1]) * (end_point[0]-start_point[0])
+				if (image.shape[1] - 1) - start_point[0] > width/2:
+					end_point = (image.shape[1] - 1, end_point[1])
+				else:
+					return None
+				#new_area = (start_point[1]-end_point[1]) * (end_point[0]-start_point[0])	
 
 			# If the topmost point of the bbox is outside the topmost
 			# point of the image, put the former equal to the latter
 			if start_point[1] >= image.shape[0]:
-				start_point = (start_point[0], image.shape[0]-1)
+				if (image.shape[0]-1) - end_point[1] > height/2:
+					start_point = (start_point[0], image.shape[0]-1)
+				else:
+					return None
 
 			# If the bottommost point of the bbox is outside the bottommost
 			# point of the image, put the former equal to the latter
 			if end_point[1] < 0:
-				end_point = (end_point[0], 0)
+				if start_point[1] - 0 > height/2:
+					end_point = (end_point[0], 0)
+				else:
+					return None
 
 			# If the image is a line or the starting and end point coincide,
 			# don't save this bounding box
 			if start_point[0] == end_point[0] or start_point[1] == end_point[1]:
-				return image
+				return None
 
 			new_width = end_point[0] - start_point[0]
 			new_height = start_point[1] - end_point[1]
@@ -256,11 +283,11 @@ class Pose(list):
 			# If the current aspect ration is too "strange" (like a horizotal
 			# line), don't save this bounding box
 			if new_width > new_height:
-				return image
+				return None
 
 			# If the new width or the new height are gigantic, don't save this boundin box
 			if new_width >= image.shape[1]/2 or new_height >= image.shape[0]/2:
-				return image
+				return None
 			
 			# print half image for debug
 			#bbox = image[0:int(image.shape[0]/2), 0:int(image.shape[1]/2)]
@@ -302,12 +329,13 @@ class Pose(list):
 
 			# If the new width or the new height are gigantic, don't save this boundin box
 			if new_width >= image.shape[1]/2 or new_height >= image.shape[0]/2:
-				return image
+				return None
 
-			# print(bbox_name, start_point, end_point)
-			bbox = image[int(end_point[1]):int(start_point[1]), int(start_point[0]):int(end_point[0])]
-			bbox_resized = cv2.resize(bbox, (64, 128), interpolation = cv2.INTER_AREA)
-			cv2.imwrite(bbox_name, bbox_resized)
+			return (int(end_point[1]), int(start_point[1]), int(start_point[0]), int(end_point[0]))
+			## print(bbox_name, start_point, end_point)
+			# bbox = image[int(end_point[1]):int(start_point[1]), int(start_point[0]):int(end_point[0])]
+			# bbox_resized = cv2.resize(bbox, (64, 128), interpolation = cv2.INTER_AREA)
+			# cv2.imwrite(bbox_name, bbox_resized)
 
 		else:
 			# Draw rectangle and text

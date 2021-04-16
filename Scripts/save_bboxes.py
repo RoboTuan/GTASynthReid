@@ -86,6 +86,9 @@ def main(in_frames_path, json_file_path, out_bboxes_path, hide):
 		frame_data = data[data[:, 0] == frame_number + 1]  # type: np.ndarray
 		image = cv2.imread(in_frames_path + image)
 
+		frame_boxes = np.empty((0,4), int)
+		frame_box_ids = []
+
 		for p_id in set(frame_data[:, 1]):
 			# p_id = 3118269184
 			pose = get_pose(frame_data=frame_data, person_id=p_id)
@@ -96,6 +99,9 @@ def main(in_frames_path, json_file_path, out_bboxes_path, hide):
 			# (invisible pose = pose of which I do not see any joint)
 			if hide and pose.invisible:
 				continue
+			if hide and pose.occluded_percentage:
+				continue
+			
 
 			p_id_folder = out_bboxes_path + "/" + str(int(p_id)) + "/"
 			if not os.path.exists(p_id_folder):
@@ -106,7 +112,62 @@ def main(in_frames_path, json_file_path, out_bboxes_path, hide):
 
 			str_frame_number = str(frame_number).zfill(4)
 			bbox_name = p_id_folder + str(int(p_id)) + "_" + str_frame_number + "_s" + day_night + seq + "c" + camera[-1] + ".jpeg"
-			image = pose.draw(image=image, color=color, bbox_name=bbox_name)
+			points = pose.draw(image=image, color=color, bbox_name=bbox_name)
+			if points is not None:
+				frame_box_ids.append(bbox_name)
+				# start_point_y, end_point_y, start_point_x, end_point_x = points
+				# print(frame_boxes.shape, np.array([points]).shape)
+				frame_boxes = np.append(frame_boxes, np.array([points]), axis=0)
+				# bbox = image[start_point_y:end_point_y, start_point_x:end_point_x]
+				# bbox_resized = cv2.resize(bbox, (64, 128), interpolation = cv2.INTER_AREA)
+				# cv2.imwrite(bbox_name, bbox_resized)
+		
+		# # Save the bounding boxes of the frame
+		# for box, ped in zip(frame_boxes, frame_box_ids):
+		# 	# The notation is different from that of pose.py but more clear
+		# 	# since in pose.py end_point_y < start_point_y but here we
+		# 	# can redefine the variable names in a clearer way
+		# 	end_point_y, start_point_y , start_point_x, end_point_x = box		
+		# 	bbox = image[end_point_y:start_point_y, start_point_x:end_point_x]
+		# 	bbox_resized = cv2.resize(bbox, (64, 128), interpolation = cv2.INTER_AREA)
+		# 	name = ped
+		# 	cv2.imwrite(name, bbox_resized)
+
+
+		# Save the bounding boxes of the frame
+		for box1, ped1 in zip(frame_boxes, frame_box_ids):
+			end_point_y1, start_point_y1, start_point_x1, end_point_x1 = box1
+			intersection = False	
+			for box2, ped2 in zip(frame_boxes, frame_box_ids):
+				if ped1 == ped2:
+					continue
+				end_point_y2, start_point_y2, start_point_x2, end_point_x2 = box2
+				
+				start_point_x_inter = max(start_point_x1, start_point_x2)
+				start_point_y_inter = min(start_point_y1, start_point_y2)
+				end_point_x_inter = min(end_point_x1, end_point_x2)
+				end_point_y_inter = max(end_point_y1, end_point_y2)
+
+				width_inter = end_point_x_inter - start_point_x_inter
+				hight_inter = start_point_y_inter - end_point_y_inter
+
+				if width_inter > 0 or hight_inter > 0:
+					area1 = abs(end_point_x1-start_point_x1) * abs(end_point_y1-start_point_y1)
+					# area2 = abs(end_point_x2-start_point_x2) * abs(end_point_y2-start_point_y2)
+					# max_area = max(area1, area2)
+					area_inter = width_inter * hight_inter
+					if area_inter > area1*0.6:
+						intersection = True
+						break			
+			
+			if intersection is True:
+				break
+			else:
+				bbox = image[end_point_y1:start_point_y1, start_point_x1:end_point_x1]
+				bbox_resized = cv2.resize(bbox, (64, 128), interpolation = cv2.INTER_AREA)
+				name = ped1
+				cv2.imwrite(name, bbox_resized)
+
 
 		#writer.append_data(np.vstack([image, image[-8:, :]]))
 		print(f'\r▸ progress: {100*(frame_number/899):6.2f}%', end='')

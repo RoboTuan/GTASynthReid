@@ -945,6 +945,27 @@ void record(std::ofstream& strm) {
 	//PED::CREATE_PED(26, hashes[513], coords.x, coords.y, coords.z, 0.0, FALSE, TRUE);
 	//PED::CREATE_PED(26, hashes[514], coords.x, coords.y, coords.z, 0.0, FALSE, TRUE);
 	
+	//// see if selected peds are visible
+	//Vector3 coords = ENTITY::GET_ENTITY_COORDS(PLAYER::PLAYER_PED_ID(), TRUE);
+	//// put the file admitted_peds.txt in the game folder first
+	//std::ifstream admitted_peds("admitted_peds.txt");
+	//Hash hash;
+	//Ped tPed;
+	//while (admitted_peds >> hash)
+	//{
+	//	STREAMING::REQUEST_MODEL(hash);
+	//	WAIT(300);
+	//	tPed = PED::CREATE_PED(26, hash, coords.x, coords.y, coords.z, 0.0, FALSE, TRUE);
+	//	for (int i = 0; i <= 11; i++) {
+	//		PED::SET_PED_COMPONENT_VARIATION(tPed, i, 0, 0, 0);
+	//	}
+	//	strm << hash << " " << ENTITY::IS_ENTITY_VISIBLE(tPed) << "\n";
+	//	WAIT(50);
+	//	STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(hash);
+	//	WAIT(300);
+	//	PED::DELETE_PED(&tPed);
+	//	WAIT(50);
+	//}
 
 	// Day sequences
 	for (auto &p : fs::recursive_directory_iterator(scenarios_path)) {

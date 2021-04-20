@@ -1039,8 +1039,8 @@ void ScenarioCreator::camera_menu()
 void ScenarioCreator::place_menu()
 {
 	const float lineWidth = 250.0;
-	// adding Vinhood Boulevard
-	const int lineCount = 17;
+	// adding Vinhood Boulevard, LEGION SQUARE
+	const int lineCount = 18;
 	menuActive = true;
 
 	std::string caption = "PLACE";
@@ -1067,7 +1067,8 @@ void ScenarioCreator::place_menu()
 		{ "MCKENZIE AIRFIELD", 2121.7f, 4796.3f, 41.1f },
 		{ "DESERT AIRFIELD", 1747.0f, 3273.7f, 41.1f },
 		{ "CHILLIAD", 425.4f, 5614.3f, 766.5f },
-		{ "VINEHOOD BOULEVARD", 290.8f, 182.9f, 105.8f}
+		{ "VINEHOOD BOULEVARD", 290.8f, 182.9f, 105.8f},
+		{ "LEGION SQUARE", 189.5f, - 928.2f, 31.8f }
 	};
 
 	DWORD waitTime = 150;

@@ -61,10 +61,14 @@ def main(in_frames_path, json_file_path, out_bboxes_path, hide):
 	Script that provides a visual representation of the annotations
 	"""
 
-	# Example in_frames_path: ~/Desktop/JTA/seq_0_day_60/cam1/
+	# Replacing double slashes since I need to index with slashes
+	in_frames_path = in_frames_path.replace("//", "/")
+
+	# Example in_frames_path: ~/Desktop/JTA/airport_entrance/seq_0_day_60/cam1/
+	# in_frames_path.split("/")[-1] is "" since it's on the right of cam1
 	camera = in_frames_path.split("/")[-2]
-	seq = in_frames_path.split("_")[1]
-	day_night = in_frames_path.split("_")[2][0]
+	seq = in_frames_path.split("/")[-3].split("_")[1]
+	day_night = in_frames_path.split("/")[-3].split("_")[2][0]
 
 	out_bboxes_path = Path(out_bboxes_path)
 	if not out_bboxes_path.parent.exists() and out_bboxes_path.parent != Path(''):
@@ -111,7 +115,7 @@ def main(in_frames_path, json_file_path, out_bboxes_path, hide):
 			color = colors[int(p_id)%len(colors)]
 
 			str_frame_number = str(frame_number).zfill(4)
-			bbox_name = p_id_folder + str(int(p_id)) + "_" + str_frame_number + "_s" + day_night + seq + "c" + camera[-1] + ".jpeg"
+			bbox_name = p_id_folder + str(int(p_id)) + "_s" + day_night + seq.zfill(3) + "c" + camera[-1] + "_" +  str_frame_number + ".jpeg"
 			points = pose.draw(image=image, color=color, bbox_name=bbox_name)
 			if points is not None:
 				frame_box_ids.append(bbox_name)

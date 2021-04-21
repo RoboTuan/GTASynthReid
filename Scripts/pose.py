@@ -60,11 +60,14 @@ class Pose(list):
 		return True
 
 	@property
+	# vedere se posso fare il 50% del busto/testa visibile
 	def occluded_percentage(self):
 		# type: () -> bool
 		"""
 		:return: True if 50% or more of the joints are occluded
 		"""
+		
+		# torso = [0, 1, 2, 3, 4, 7, 8, 11, 12, 13, 14, 15, 16, 19]
 		count = 0
 
 		for j in self:

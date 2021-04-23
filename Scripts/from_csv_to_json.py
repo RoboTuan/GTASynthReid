@@ -24,7 +24,7 @@ if FPS == 60:
     annotations = path.split("coords.csv")[0] + "seq_"
     json_coords1 = open(annotations + seq + "_" + day_night + "_cam1.json", 'w')
     json_coords2 = open(annotations + seq + "_" + day_night + "_cam2.json", 'w')
-    print(annotations)
+    # print(annotations)
     print(annotations + seq + "_" + "cam1.json")
     print(annotations + seq + "_" + "cam2.json")
 
@@ -50,8 +50,11 @@ if FPS == 60:
 
 
 else:
-    annotations = "./annotations/reID/seq_"
-    json_coords1 = open(annotations + seq + "_" + "cam1.json", 'w')
+    annotations = path.split("coords.csv")[0] + "seq_"
+    json_coords1 = open(annotations + seq + "_" + day_night + "_cam1.json", 'w')
+    # print(annotations)
+    print(annotations + seq + "_" + "cam1.json")
+    
     cam1 = coords
     # print(cam1["frame"].drop_duplicates().shape)
     #n_rows = cam1.shape[0]

@@ -2,10 +2,11 @@
 
 # /Users/lpdef/Desktop/JTA/seq_1/
 
-while getopts p: flag
+while getopts p:f: flag
 do
     case "${flag}" in
         p) base_folder=${OPTARG};;
+        f) FPS=${OPTARG};;
     esac
 done
 
@@ -29,27 +30,43 @@ ext=".jpeg"
 
 cam1=$base_folder/cam1
 cam2=$base_folder/cam2
+
 # make dirs if they do not exist
-mkdir -p $cam1
-mkdir -p $cam2
+if [[ "$FPS" -eq 60 ]]; then
+    mkdir -p $cam1
+    mkdir -p $cam2
+elif [[ "$FPS" -eq 30 ]]; then
+    mkdir -p $cam1
+fi
 
 frame_counter=1
 frame_counter=$(printf "%04d" $frame_counter)
 
-# include last frame
-for ((i=START;i<=END;i++)); do
-    # if current crame is not 1 and is not even increment frame counter
-    if [[ $i -ne 1 ]] && [[ $(($i%2)) -ne 0 ]]; then
+if [[ "$FPS" -eq 60 ]]; then
+    # include last frame
+    for ((i=START;i<=END;i++)); do
+        # if current crame is not 1 and is not even increment frame counter
+        if [[ $i -ne 1 ]] && [[ $(($i%2)) -ne 0 ]]; then
+            frame_counter=$((10#$frame_counter+1))
+            frame_counter=$(printf "%04d" $frame_counter)
+        fi
+
+        if [[ $(($i%2)) -ne 0 ]]; then
+            # it is odd
+            mv $base_folder/${i}${ext} $cam1/${frame_counter}${ext}
+        else
+            # it is even
+            mv $base_folder/${i}${ext} $cam2/${frame_counter}${ext}
+        fi
+
+    done
+
+elif [[ "$FPS" -eq 30 ]]; then
+    # include last frame
+    for ((i=START;i<=END;i++)); do
+        mv $base_folder/${i}${ext} $cam1/${frame_counter}${ext}
         frame_counter=$((10#$frame_counter+1))
         frame_counter=$(printf "%04d" $frame_counter)
-    fi
 
-    if [[ $(($i%2)) -ne 0 ]]; then
-        # it is odd
-        mv $base_folder/${i}${ext} $cam1/${frame_counter}${ext}
-    else
-        # it is evne
-        mv $base_folder/${i}${ext} $cam2/${frame_counter}${ext}
-    fi
-
-done
+    done
+fi

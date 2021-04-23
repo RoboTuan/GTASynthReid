@@ -36,7 +36,7 @@ fi
 # Activate environment
 source ~/JTA_Dataset/bin/activate
 
-sh ./double_camera.sh -p $sequence
+sh ./double_camera.sh -p $sequence -f $FPS
 python ./from_csv_to_json.py --path_to_coords $coords
 
 if [[ "$FPS" -eq 60 ]]; then

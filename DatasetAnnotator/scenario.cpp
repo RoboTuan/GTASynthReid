@@ -1442,6 +1442,8 @@ void DatasetAnnotator::spawn_peds(Vector3 pos, Vector3 goFrom, Vector3 goTo, int
 			break;
 		case 4:
 			AI::TASK_WANDER_IN_AREA(ped[i], current.x, current.y, current.z, (float)radius, (float)min_lenght, (float)time_between_walks);
+			// Adding the ped to the scenario so that it will be removed in the next one
+			addwPed_scenario(ped[i]);
 			break;
 		case 5:
 			if (i > 0)

@@ -6,3 +6,5 @@ typing>=3.6
 imageio>=2.4
 path.py>=11.0
 imageio-ffmpeg
+ffmpeg-python
+pandas

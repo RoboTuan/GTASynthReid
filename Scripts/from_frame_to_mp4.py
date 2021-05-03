@@ -9,8 +9,8 @@ args, _ = parser.parse_known_args()
 input = args.input
 output = args.output
 
-# input example: '/Users/lpdef/Desktop/JTA/seq_0_60/cam2/*.jpeg'
-# output example: '/Users/lpdef/Desktop/JTA/seq_0_60/cam2.mp4'
+# input example: '/path/to/sequences/seq_0_60/cam2/*.jpeg'
+# output example: '/path/to/sequences/seq_0_60/cam2.mp4'
 
 (
     ffmpeg

@@ -126,17 +126,6 @@ def main(in_frames_path, json_file_path, out_bboxes_path, hide):
 				# bbox_resized = cv2.resize(bbox, (64, 128), interpolation = cv2.INTER_AREA)
 				# cv2.imwrite(bbox_name, bbox_resized)
 		
-		# # Save the bounding boxes of the frame
-		# for box, ped in zip(frame_boxes, frame_box_ids):
-		# 	# The notation is different from that of pose.py but more clear
-		# 	# since in pose.py end_point_y < start_point_y but here we
-		# 	# can redefine the variable names in a clearer way
-		# 	end_point_y, start_point_y , start_point_x, end_point_x = box		
-		# 	bbox = image[end_point_y:start_point_y, start_point_x:end_point_x]
-		# 	bbox_resized = cv2.resize(bbox, (64, 128), interpolation = cv2.INTER_AREA)
-		# 	name = ped
-		# 	cv2.imwrite(name, bbox_resized)
-
 
 		# Save the bounding boxes of the frame
 		for box1, ped1 in zip(frame_boxes, frame_box_ids):

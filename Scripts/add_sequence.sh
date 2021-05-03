@@ -14,11 +14,6 @@ if [[ ! -d "$path" ]]; then
     exit 1
 fi
 
-# if [[ ! -d "$path" ]]; then
-#     echo "Creating directory: $path"
-#     mkdir $path
-# fi
-
 echo "Base directory: $path"
 seq_splits=(${seq//_/ })
 FPS=${seq_splits[3]}
@@ -32,9 +27,6 @@ if [[ ! -f "$coords" ]]; then
     echo "$coords does not exist!"
     exit 1
 fi
-
-# Activate environment
-source ~/JTA_Dataset/bin/activate
 
 sh ./double_camera.sh -p $sequence -f $FPS
 python ./from_csv_to_json.py --path_to_coords $coords

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# /Users/lpdef/Desktop/JTA/seq_1/
-
 while getopts p:f: flag
 do
     case "${flag}" in
@@ -9,8 +7,6 @@ do
         f) FPS=${OPTARG};;
     esac
 done
-
-# read -p 'Input  path/to/files: ' base_folder
 
 echo "Directory of sequence: " $base_folder
 

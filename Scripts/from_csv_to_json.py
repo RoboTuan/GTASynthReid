@@ -63,32 +63,3 @@ else:
     parsed = json.loads(result)['data']
     final = json.dumps(parsed, indent=None)
     json_coords1.write("%s" % final)
-
-
-
-
-
-# n_rows = cam1.shape[0]
-# # # n_rows = 2
-# print(f"Number of rows: {n_rows}")
-
-# result = cam1.to_json(orient="split")
-# parsed = json.loads(result)['data']
-# final = json.dumps(parsed, indent=None)
-# # final.replace(',', '; ')
-# myfile.write("%s" % final)
-
-
-#myfile.write("[")
-
-# for i in range(n_rows):
-#     line = coords.iloc[i].to_list()
-#     #print(line)
-#     if i == n_rows-1:
-#         myfile.write("%s" % line)
-#     else:
-#         myfile.write("%s, " % line)
-
-# myfile.write("]")
-
-# myfile.close()

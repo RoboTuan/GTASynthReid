@@ -1,5 +1,6 @@
 import os
 import json
+from os.path import isdir
 from typing import Sequence
 import pandas as pd
 import argparse
@@ -18,7 +19,7 @@ cameras_file = args.cameras_file
 path_to_admitted_peds = args.path_to_admitted_peds
 output = args.output
 
-columns = ["Ped", "#sequences", "#sequences_day", "sequences_nigth", "#bboxes",  "#bboxes_day", "#bboxes_nigth", "#cams", "#cams_day", "#cams_night"]
+columns = ["Ped", "#sequences", "#sequences_day", "#sequences_nigth", "#bboxes",  "#bboxes_day", "#bboxes_nigth", "#cams", "#cams_day", "#cams_night"]
 statistics = pd.DataFrame(columns=columns)
 
 with open(cameras_file) as json_file:
@@ -31,9 +32,10 @@ if ".DS_Store" in peds:
 peds.sort()
 
 for ped in peds:
-    if ped == "Dataset.txt":
-        continue
     bboxes_path = os.path.join(dataset, ped)
+    # Skip dataset.txt and statistics.csv
+    if not os.path.isdir(bboxes_path):
+        continue
     bboxes = os.listdir(bboxes_path)
     # print(bboxes)
     # Check for .DS_Store

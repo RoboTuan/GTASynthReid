@@ -3,7 +3,7 @@ import sys
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--path_to_dataset', type=str, required=True, help='Path to the dayaset with the old naming id_frame_sequenceCamera for the bounding boxes')
+parser.add_argument('--path_to_dataset', type=str, required=True, help='Path to the dataset with the old naming id_frame_sequenceCamera for the bounding boxes')
 args, _ = parser.parse_known_args()
 
 dataset = args.path_to_dataset
@@ -16,9 +16,10 @@ peds.sort()
 
 def folders_in(dataset_path):
     for ped in peds:
-        if ped == "Dataset.txt":
-            continue
         files = os.path.join(dataset_path, ped)
+        # Skip dataset.txt and statistics.csv
+        if not os.path.isdir(files):
+            continue      
         for file in os.listdir(files):
             if os.path.isdir(os.path.join(files, file)):
                 yield os.path.join(os.path.join(files, file))

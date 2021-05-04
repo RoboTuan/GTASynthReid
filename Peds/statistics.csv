@@ -1,4 +1,4 @@
-Ped,#sequences,#sequences_day,sequences_nigth,#bboxes,#bboxes_day,#bboxes_nigth,#cams,#cams_day,#cams_night
+Ped,#sequences,#sequences_day,#sequences_nigth,#bboxes,#bboxes_day,#bboxes_nigth,#cams,#cams_day,#cams_night
 1001210244,4,2,2,340,164,176,4,3,3
 1004114196,4,2,2,199,127,72,5,2,4
 1005070462,3,2,1,101,34,67,3,3,1

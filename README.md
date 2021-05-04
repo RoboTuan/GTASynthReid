@@ -32,7 +32,7 @@ The following example exaplains the bounding box naming: `42647445_sd000c1_0396.
 * `c1` means that this bounding box was recorded by the camera 1 in this sequence (there can be up to 2 cameras in each sequence)
 * `0396` is the frame number
 
-In the dataset with the training-testing splits, instead of `c1` or `c2` you will find the unique identifier of the camera (from 1 to 19), such as `c08`. There is a [script](https://github.com/RoboTuan/Pedestrian_reID/blob/main/Scripts/training_dataset.py) that transforms the dataset from the first namining to the second one.
+In the dataset with the training-testing splits, instead of `c1` or `c2` you will find the unique identifier of the camera (from 1 to 19), such as `c08`. There is a [script](https://github.com/RoboTuan/Pedestrian_reID/blob/main/Scripts/training_dataset.py) that transforms the dataset from the first namining convention to the second one.
 
 
 

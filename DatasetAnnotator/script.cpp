@@ -50,9 +50,9 @@ void record(std::ofstream& strm) {
 
 	WAIT(1000);
 
-	//// see if selected peds are visible
+	//// Use this to test if selected peds are visible
 	//Vector3 coords = ENTITY::GET_ENTITY_COORDS(PLAYER::PLAYER_PED_ID(), TRUE);
-	//// put the file admitted_peds.txt in the game folder first
+	//// Create or put the file admitted_peds.txt in the game folder first
 	//std::ifstream admitted_peds("admitted_peds.txt");
 	//Hash hash;
 	//Ped tPed;

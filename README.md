@@ -13,7 +13,7 @@ To simulate a realistic scenario, the generated bounding boxes are not "perfect"
 
 Some of the individuals share similar clothes, even if they represent different identities. This happpens especially for those who wear a uniform or a suit and in low illumination settings. In the picture below, each column represent a couple of peds with similar appearance.
 
-![similar_peds](https://raw.githubusercontent.com/RoboTuan/Pedestrian_reID/main/Images/similar_peds.png?token=ANC4UTJXZGPF4BBCGKCHFIDATJCYO)
+![similar_peds](https://github.com/RoboTuan/Pedestrian_reID/blob/main/Images/similar_peds.png)
 
 ## Get the dataset
 There are different versions of this dataset:

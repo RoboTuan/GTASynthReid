@@ -1,6 +1,10 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define _SILENCE_TR2_SYS_NAMESPACE_DEPRECATION_WARNING
 
+// Define this for the deprecation
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+
+
 #include "scenario.h"
 #include <filesystem>
 #include <iostream>
@@ -13,8 +17,8 @@
 int counter = 0;
 
 namespace fs = std::experimental::filesystem;
-
-using namespace std::tr2::sys;
+using namespace fs;
+//using namespace std::tr2::sys;
 
 // prova vettore hash
 #include <list>

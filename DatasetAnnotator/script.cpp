@@ -4,12 +4,17 @@
 			(C) Alexander Blade 2015
 */
 
+// Define this for the deprecation
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+
+
 #include "scenario.h"
 #include <string.h>
 #include <direct.h>
 #include <fstream>
 #include "files.h"
 #include <list>
+// Deprecated but is neede for recursive_directory_iterator and other stuff like is_regular_file
 #include <experimental/filesystem>
 #include "keyboard.h"
 

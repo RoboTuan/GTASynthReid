@@ -27,8 +27,11 @@ if not isdir(path_to_training_dataset):
     os.mkdir(path_to_training_dataset)
 
 
-# 60:40 train-test split (323:215)
-index = 323
+## 60:40 train-test split (323:215)
+#index = 323
+
+# 438:100 new split identities for training and testgin
+index = 438
 peds = np.array([ped for ped in os.listdir(path_to_dataset) if isdir(join(path_to_dataset, ped))])
 
 random.seed(42)

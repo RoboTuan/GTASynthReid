@@ -3,7 +3,7 @@
 
 `WARNING: this dataset might contain nudity`
 
-This project contains two sections: the mods with which you can create and record game sequences and the scripts necessary to build the dataset. The former section was a readaptation of the [JTA-Mods](https://github.com/fabbrimatteo/JTA-Mods) by [fabbrimatteo](https://github.com/fabbrimatteo) while the latter was created starting from the scripts in the [JTA-Dataset](https://github.com/fabbrimatteo/JTA-Dataset) repository by [fabbrimatteo](https://github.com/fabbrimatteo). The original works focus on pedestrian pose estimation and tracking in urban scenarios while this project concerns pedestrian re-identification.
+This project contains two sections: the mods with which you can create and record game sequences and the scripts necessary to build the dataset. The former section was a readaptation of the [JTA-Mods](https://github.com/fabbrimatteo/JTA-Mods) by [fabbrimatteo](https://github.com/fabbrimatteo) while the latter was created starting from the scripts in the [JTA-Dataset](https://github.com/fabbrimatteo/JTA-Dataset) repository by [fabbrimatteo](https://github.com/fabbrimatteo). The original works focus on pedestrian pose estimation and tracking in urban scenarios while this project concerns pedestrian re-identification. I used this dataset for my [master thesis](https://github.com/RoboTuan/synth-reid).
 
 ## A GTAV dataset for pedestrian re-identification
 

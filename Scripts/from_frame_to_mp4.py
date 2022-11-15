@@ -14,7 +14,7 @@ output = args.output
 
 (
     ffmpeg
-    .input(input + '/*.jpeg', pattern_type='glob', framerate=30)
+    .input(input + '/%04d.jpeg', pattern_type='sequence', framerate=30)
     .output(output)
     .run()
 )
